@@ -1,0 +1,18 @@
+package com.graduate_design.springboot.entity;
+
+import lombok.Data;
+
+@Data
+public class Sign {
+    private Integer signID;
+    private Integer activityID;
+    private String activityTime;
+    private String activityName;
+    private String organizer;
+    private String address;
+    private Integer userID;
+    private String userNickName;
+    private String participatingStatus;
+    private String  qualification;
+
+}

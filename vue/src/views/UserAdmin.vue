@@ -1,0 +1,256 @@
+<template>
+  <div>
+
+    <div style="margin: 10px 0">
+      <template>
+        <el-input style="width: 200px;" placeholder="请输入用户名" suffix-icon="el-icon-search" v-model="user_name"></el-input>
+        <el-input style="width: 200px; margin-left: 10px;" placeholder="请输入昵称" suffix-icon="el-icon-search" v-model="nick_name"></el-input>
+        <el-input style="width: 200px; margin-left: 10px;" placeholder="请输入手机号" suffix-icon="el-icon-search" v-model="phone_number"></el-input>
+        <el-select style="width: 200px; margin-left: 10px;" placeholder="请选择用户身份" suffix-icon="el-icon-search" v-model="identitySelect">
+          <el-option v-for="item in identityList" :key="item.identity" :label="item.identity"
+                     :value="item.identity" >
+          </el-option>
+        </el-select>
+        <el-select style="width: 200px; margin-left: 10px;" placeholder="请选择社团" suffix-icon="el-icon-search" v-model="orgSelect">
+          <el-option v-for="item in orgList" :key="item.organization" :label="item.organization"
+                     :value="item.organization" >
+          </el-option>
+        </el-select>
+
+      </template>
+      <el-button style="margin-left: 10px;" type="primary" @click="load">搜索</el-button>
+      <el-button type="warning" @click="reset">重置</el-button>
+    </div>
+
+    <div style="margin: 10px 0">
+      <el-button type="primary" @click="handleAdd">新增用户 <i class="el-icon-circle-plus-outline"></i></el-button>
+    </div>
+
+    <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
+      <el-table-column prop="id" label="用户ID"></el-table-column>
+      <el-table-column prop="username" label="用户名" ></el-table-column>
+      <el-table-column prop="nickname" label="昵称"></el-table-column>
+      <el-table-column prop="phone" label="手机号码"></el-table-column>
+      <el-table-column prop="identity" label="用户身份"></el-table-column>
+      <el-table-column prop="organization" label="所属社团"></el-table-column>
+      <el-table-column label="操作"  width="200" align="center">
+        <template slot-scope="scope">
+          <el-button type="success" @click="handleEdit(scope.row)">修改<i class="el-icon-edit"></i></el-button>
+          <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
+                         icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row.id)">
+            <!--                scope.row.id 获取对应记录的id-->
+            <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
+          </el-popconfirm>
+
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页行 -->
+    <div style="padding: 10px 0">
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[5, 10, 15,20]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+      </el-pagination>
+    </div>
+
+    <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%" >
+      <el-form :model="form" :rules="rules" ref="userForm" label-width="auto" size="small">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="form.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password" :rules="[{required: pwRequired, message: '请输入密码', trigger: 'blur'}]">
+          <el-input v-model="form.password" show-password></el-input>
+        </el-form-item>
+        <el-form-item label="昵称" prop="nickname">
+          <el-input v-model="form.nickname"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="phone">
+          <el-input v-model="form.phone" type="number"></el-input>
+        </el-form-item>
+        <el-form-item label="用户身份" prop="identity">
+          <el-select v-model="form.identity" @change="orgChange">
+            <el-option v-for="item in identityList" :key="item.identity" :label="item.identity"
+                       :value="item.identity" >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所属组织" prop="organization"
+                      :rules="[ {required: orgRequired, message: '请选择社团', trigger: 'change'} ]">
+          <el-select v-model="form.organization" :disabled="orgDisabled">
+            <el-option v-for="item in orgList" :key="item.organization" :label="item.organization"
+                       :value="item.organization" >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelForm">取 消</el-button>
+        <el-button type="primary" @click="saveForm()">确 定</el-button>
+      </div>
+    </el-dialog>
+
+  </div>
+</template>
+
+<script>
+export default {
+  name: "UserAdmin",
+  data() {
+    return {
+      tableData: [],
+      total: 0,
+      pageNum: 1,
+      pageSize: 10,
+      user_name: "",
+      nick_name: "",
+      phone_number: "",
+      identitySelect: "",
+      orgSelect: "",
+      pwRequired: true,
+      orgDisabled: false,    // 启用输入框
+      orgRequired: false,   // 不必填
+      dialogFormVisible: false,   //表单不可见
+      identityList: [],
+      orgList: [],
+      form: {
+        username: "",
+        password:"",
+        nickname: "",
+        phone: "",
+        identity: "",
+        organization: "",
+      },
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur'},
+          {min: 3, max: 10, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+        ],
+        password: [
+          {min: 3, max: 10, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+        ],
+        nickname: [
+          { required: true, message: '请输入昵称', trigger: 'blur'},
+          {min: 3, max: 10, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+        ],
+        phone: [
+          { required: true, message:'请输入手机号码',trigger: 'blur'} ,
+          {min: 11, max: 11, message: '长度要 11 个数字', trigger: 'blur'}
+        ],
+        identity: [ {required: true, message: '请选择用户身份', trigger: 'change'} ]
+      }
+    }
+  },
+  created() {
+    this.load()   // 请求查询数据
+  },
+  methods:{
+    load(){
+      this.request.get("/user/page", {     //分页查询数据
+        params: {
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+          username: this.user_name,
+          nickname: this.nick_name,
+          phone: this.phone_number,
+          identity: this.identitySelect,
+          organization: this.orgSelect,
+        }
+      }).then(res => {
+        this.tableData = res.data
+        this.total = res.total
+      })
+      this.request.get("/user/identity").then(list =>{  // 查询用户身份数据
+        this.identityList = list
+      })
+      this.request.get("/user/org").then(list =>{    // 查询社团
+        this.orgList = list
+      })
+    },
+    reset(){
+      this.user_name = ""
+      this.nick_name = ""
+      this.phone_number = ""
+      this.orgSelect = ""
+      this.identitySelect = ""
+      this.load()
+    },
+    del(id) {
+      this.request.delete("/user/" + id).then(res => {
+        if (res) {
+          this.$message.success("删除成功")
+          this.load()
+        } else {
+          this.$message.error("删除失败")
+        }
+      })
+    },
+    saveForm() {              //新增数据或修改更新
+      this.$refs['userForm'].validate((valid) => {
+        if (valid) {
+          this.request.post("/user/register", this.form).then(res =>{
+            if (res){
+              this.$message.success("保存成功")
+              this.dialogFormVisible = false
+              this.load()
+            } else {
+              this.$message.error("保存失败，用户名已存在")
+              return false;
+            }
+          })
+        }
+      });
+    },
+    cancelForm(){
+      this.load()
+      this.dialogFormVisible = false
+      this.form = []
+      this.orgDisabled = false
+      this.orgRequired = false
+    },
+    orgChange(value){      //改变所属社团输入框的可用性
+      if (value == "普通用户") {
+        this.orgDisabled = true       // 不启用输入框
+        this.form.organization = ""   // 清空选择框
+        this.orgRequired = false      // 改为“非必填”
+      } else {
+        this.orgRequired = true
+        this.orgDisabled = false
+      }
+    },
+    handleAdd(){      //添加新用户
+      this.dialogFormVisible = true
+      this.form = {}
+      this.pwRequired = true
+    },
+    handleEdit(row){
+      this.dialogFormVisible = true
+      this.form = row
+      this.pwRequired = false
+    },
+
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize
+      this.load()
+    },
+    handleCurrentChange(pageNum) {
+      this.pageNum = pageNum
+      this.load()
+    }
+  }
+}
+</script>
+
+<style>
+.headerBg {
+  background: #eee!important;
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 250px;
+}
+</style>

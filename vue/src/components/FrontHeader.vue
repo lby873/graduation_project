@@ -1,0 +1,44 @@
+<template>
+  <div style="font-size: 12px; border-bottom: 1px solid #ccc; line-height: 60px; display: flex">
+    <div style="flex: 1; font-size: 20px">
+      <span :class="collapseBtnClass" style="cursor: pointer" @click="collapse"></span>
+    </div>
+    <el-dropdown style="width: 250px; cursor: pointer;">
+      <div style="text-align:right">
+        <span><b>欢迎您，{{userLogin.nickname}}</b></span><i class="el-icon-arrow-down" style="margin-left: 10px"></i>
+      </div>
+      <el-dropdown-menu slot="dropdown" style="width: 90px; margin-right: 10px">
+        <el-dropdown-item style="font-size: 14px; padding: 5px 10px">个人信息</el-dropdown-item>
+        <el-dropdown-item style="font-size: 14px; padding: 5px 10px">
+          <span @click="logout">退出</span>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Header",
+  data() {
+    return {
+      userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
+    }
+  },
+  methods:{
+    logout() {
+      this.$router.push("/login")
+      localStorage.removeItem("userLogin")
+      this.$message.success("退出成功")
+    }
+  },
+  props: {
+    collapseBtnClass: String,
+    collapse: function (){},
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

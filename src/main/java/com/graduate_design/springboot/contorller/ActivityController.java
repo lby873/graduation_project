@@ -1,0 +1,43 @@
+package com.graduate_design.springboot.contorller;
+
+import com.graduate_design.springboot.entity.Activity;
+import com.graduate_design.springboot.service.ActivityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/activity")
+public class ActivityController {
+
+    @Autowired
+    private ActivityService activityService;
+
+    @GetMapping
+    public List<Activity> index() {
+        return activityService.findAllActivity();
+    }
+
+    @PostMapping
+    public Boolean save(@RequestBody Activity activity){
+        return activityService.save(activity);
+    }
+
+    @DeleteMapping("/{id}")
+    public Boolean delete(@PathVariable Integer id){
+        return activityService.deleteById(id);
+    }
+
+    @GetMapping("/page")
+    public Map<String, Object> findPage(@RequestParam Integer pageNum,
+                                        @RequestParam Integer pageSize,
+                                        @RequestParam String name,
+                                        @RequestParam String organizer,
+                                        @RequestParam String address) {
+        return activityService.findPage(pageNum,pageSize,name,organizer,address);
+    }
+
+}
