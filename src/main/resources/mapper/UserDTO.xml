@@ -27,7 +27,7 @@
             </if>
         </set>
         <where>
-            id = #{id}
+            userID = #{userID}
         </where>
     </update>
 

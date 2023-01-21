@@ -11,16 +11,15 @@
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="activityID" label="活动ID" width="100"></el-table-column>
-      <el-table-column prop="time" label="活动时间" width="120"></el-table-column>
-      <el-table-column prop="name" label="活动名称" width="120"></el-table-column>
-      <el-table-column prop="organizer" label="主办方社团" width="120"></el-table-column>
-      <el-table-column prop="address" label="活动地址" width="100"></el-table-column>
+      <el-table-column prop="activityID" label="活动ID" width="60" align="center"></el-table-column>
+      <el-table-column prop="time" label="活动时间" width="100" align="center"></el-table-column>
+      <el-table-column prop="name" label="活动名称" width="120" align="center"></el-table-column>
+      <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
+      <el-table-column prop="address" label="活动地址" width="100" align="center"></el-table-column>
       <el-table-column prop="detail" label="活动详情"></el-table-column>
-      <el-table-column label="操作"  width="200" align="center">
+      <el-table-column label="操作"  width="150" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="sign(scope.row)">报名<i class="el-icon-edit"></i></el-button>
-<!--          <el-button type="danger" @click="cancelSign">取消报名<i class="el-icon-remove-outline"></i></el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -37,18 +36,19 @@
           :total="total">
       </el-pagination>
     </div>
+
   </div>
 </template>
 
 <script>
   export default {
-    name: "FrontHome",
+    name: "Home",
     data(){
       return {
         tableData: [],
         total: 0,
         pageNum: 1,
-        pageSize: 3,
+        pageSize: 5,
         activityName: '',
         organizer: '',
         address: '',
@@ -58,8 +58,10 @@
           name:'',
           organizer:'',
           address:'',
+          detail:'',
           userID: '',
           userNickname:'',
+          code:'0',       // 0报名、1取消报名
         },
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
       }
@@ -70,7 +72,7 @@
     methods:{
       load(){
         // 用axios请求数据
-        this.request.get("/sign/page",{
+        this.request.get("/sign/activityPage",{
           params: {
             pageNum: this.pageNum,
             pageSize: this.pageSize,
@@ -105,6 +107,7 @@
         this.signDTO.name = row.name;
         this.signDTO.organizer = row.organizer;
         this.signDTO.address = row.address;
+        this.signDTO.detail = row.detail;
         this.signDTO.userID = this.userLogin.userID;
         this.signDTO.userNickname = this.userLogin.nickname;
         this.request.post("/sign/save",this.signDTO).then(res =>{
@@ -119,9 +122,3 @@
     }
   }
 </script>
-
-<style scoped>
-.headerBg {
-  background: #eee!important;
-}
-</style>

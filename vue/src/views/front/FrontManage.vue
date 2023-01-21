@@ -31,6 +31,7 @@ import Header from "@/components/FrontHeader.vue";
         isCollapse: false,
         sideWidth: 250,
         logoTextShow: true,
+        drawer: false,
       }
     },
     components:{
@@ -49,7 +50,7 @@ import Header from "@/components/FrontHeader.vue";
           this.collapseBtnClass = 'el-icon-s-fold'
           this.logoTextShow = true
         }
-      }
+      },
     }
   }
 </script>

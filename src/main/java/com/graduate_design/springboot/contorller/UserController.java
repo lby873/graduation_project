@@ -24,18 +24,18 @@ public class UserController {
     @PostMapping("/register")      // 注册
     public Boolean register(@RequestBody UserDTO userDTO){  return userService.register(userDTO); }
 
-    @PostMapping        // 新增和修改
+    @PostMapping("/save")       // 新增和修改用户信息
     public Boolean save(@RequestBody UserDTO userDTO) {   // 新增或者更新，requestBody将json转为UserDTO类型
         return userService.save(userDTO);
     }
 
-    //删除
+    // 删除
     @DeleteMapping("/{id}")     //删除
     public Boolean delete(@PathVariable Integer id) {
         return userService.deleteById(id);
     }
 
-    //查询所有
+    //查询
     @GetMapping
     public List<User> index() {
         return userService.findAll();

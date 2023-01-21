@@ -18,13 +18,23 @@ public class SignController {
         return signService.save(signDTO);
     }
 
+    @GetMapping("/activityPage")
+    public Map<String, Object> findActivityPage(@RequestParam Integer pageNum,
+                                        @RequestParam Integer pageSize,
+                                        @RequestParam Integer userID,
+                                        @RequestParam String activityName,
+                                        @RequestParam String organizer,
+                                        @RequestParam String address) {
+        return signService.findActivityPage(pageNum,pageSize,userID,activityName,organizer,address);
+    }
     @GetMapping("/page")
     public Map<String, Object> findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam Integer userID,
                                         @RequestParam String activityName,
                                         @RequestParam String organizer,
-                                        @RequestParam String address) {
-        return signService.findPage(pageNum,pageSize,userID,activityName,organizer,address);
+                                        @RequestParam String address,
+                                        @RequestParam Integer pageShow) {
+        return signService.findPage(pageNum,pageSize,userID,activityName,organizer,address,pageShow);
     }
 }

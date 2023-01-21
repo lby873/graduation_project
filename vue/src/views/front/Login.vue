@@ -38,7 +38,10 @@
           <el-input v-model="form.phone"></el-input>
         </el-form-item>
         <el-form-item label="用户身份">
-          <el-input v-model="form.identity" placeholder="普通用户" :disabled="true"></el-input>
+          <el-input v-model="form.identity" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="所在社团组织">
+          <el-input v-model="form.organization" :disabled="true"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -64,15 +67,26 @@ export default {
         nickname: "",
         phone: "",
         identity: '普通用户',
+        organization:'无',
       },
+      // 注册规则
       rules_register: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 3, max: 10, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+          {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 3, max: 10, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+          {
+            validator: function(rule, value, callback) {
+              if (/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{3,20}$/.test(value) == false) {
+                callback(new Error("请输入3-20位，数字和字母组合"));
+              } else {          //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
         ],
         nickname: [
           { required: true, message: '请输入昵称', trigger: 'blur'},
@@ -101,6 +115,7 @@ export default {
           }
         ],
       },
+      // 登录规则
       rules_login: {
         username: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
@@ -126,6 +141,7 @@ export default {
         this.identityList = list
       })
     },
+    // 登录检验
     login() {
       this.$refs['userLogin'].validate((valid) => {
         if (valid) {      // 表单校验合法
@@ -141,11 +157,15 @@ export default {
         }// if(valid)
       });
     }, // login()
+
+    // 注册检验
     register(){             //注册新用户
       this.dialogFormVisible = true
       this.form = {}
       this.form.identity = "普通用户"
+      this.form.organization = "无"
     },
+
     saveForm(){
       this.$refs['userRegister'].validate((valid) => {
         if (valid) {      // 表单校验合法

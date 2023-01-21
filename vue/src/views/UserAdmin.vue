@@ -27,7 +27,7 @@
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="id" label="用户ID"></el-table-column>
+      <el-table-column prop="userID" label="用户ID"></el-table-column>
       <el-table-column prop="username" label="用户名" ></el-table-column>
       <el-table-column prop="nickname" label="昵称"></el-table-column>
       <el-table-column prop="phone" label="手机号码"></el-table-column>
@@ -37,8 +37,8 @@
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">修改<i class="el-icon-edit"></i></el-button>
           <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
-                         icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row.id)">
-            <!--                scope.row.id 获取对应记录的id-->
+                         icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row.userID)">
+            <!--                scope.row.userID 获取对应记录的id-->
             <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
           </el-popconfirm>
 
@@ -119,6 +119,7 @@ export default {
       identityList: [],
       orgList: [],
       form: {
+        userID: "",
         username: "",
         password:"",
         nickname: "",
@@ -128,19 +129,45 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 3, max: 10, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+          {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
         ],
         password: [
-          {min: 3, max: 10, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+          {
+            validator: function(rule, value, callback) {
+              if (value == null){     // 用户不更改密码
+                callback();
+              }else if (/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{3,20}$/.test(value) == false) {   // 用户更改密码
+                callback(new Error("请输入3-20位，数字和字母组合"));
+              } else {          //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
         ],
         nickname: [
-          { required: true, message: '请输入昵称', trigger: 'blur'},
-          {min: 3, max: 10, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+          {
+            validator: function(rule, value, callback) {
+              if (/^[0-9]*$/.test(value) == true) {
+                callback(new Error("请输入中文或字母"));
+              } else {          //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
         ],
         phone: [
-          { required: true, message:'请输入手机号码',trigger: 'blur'} ,
-          {min: 11, max: 11, message: '长度要 11 个数字', trigger: 'blur'}
+          {
+            validator: function(rule, value, callback) {
+              if (/^1[3|4|5|7|8][0-9]{9}$/.test(value) == false) {
+                callback(new Error("请输入正确的手机号码"));
+              } else {          //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
         ],
         identity: [ {required: true, message: '请选择用户身份', trigger: 'change'} ]
       }
@@ -185,6 +212,7 @@ export default {
         if (res) {
           this.$message.success("删除成功")
           this.load()
+          window.location.reload()      // 刷新页面
         } else {
           this.$message.error("删除失败")
         }
@@ -193,7 +221,7 @@ export default {
     saveForm() {              //新增数据或修改更新
       this.$refs['userForm'].validate((valid) => {
         if (valid) {
-          this.request.post("/user/register", this.form).then(res =>{
+          this.request.post("/user/save", this.form).then(res =>{
             if (res){
               this.$message.success("保存成功")
               this.dialogFormVisible = false
@@ -216,7 +244,7 @@ export default {
     orgChange(value){      //改变所属社团输入框的可用性
       if (value == "普通用户") {
         this.orgDisabled = true       // 不启用输入框
-        this.form.organization = ""   // 清空选择框
+        this.form.organization = "无"   // 社团组织默认值
         this.orgRequired = false      // 改为“非必填”
       } else {
         this.orgRequired = true

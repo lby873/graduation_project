@@ -2,7 +2,6 @@ package com.graduate_design.springboot.service;
 
 import com.graduate_design.springboot.contorller.dto.UserDTO;
 import com.graduate_design.springboot.entity.User;
-import com.graduate_design.springboot.mapper.ActivityMapper;
 import com.graduate_design.springboot.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,14 @@ public class UserService {
     private UserMapper userMapper;
 
     public Boolean save(UserDTO userDTO) {        // 新增和修改
-        if (userDTO.getId() == null) {     // user没有id，则表示是新增
+        String name = userDTO.getUsername();
+        User user = userMapper.checkUsername(name);
+        if (userDTO.getUserID() == null) {     // user没有id，则表示是新增，否则为更新
             return userMapper.insert(userDTO);
-        } else {                        // 否则为更新
+        } else if(user == null || user.getUsername().equals(name)){    // 修改后的用户名不重复，或没有修改
             return userMapper.update(userDTO);
+        } else {
+            return false;
         }
     }
 
@@ -69,4 +72,5 @@ public class UserService {
             return false;
         }
     }
+
 }

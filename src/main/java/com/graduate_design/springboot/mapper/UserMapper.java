@@ -12,7 +12,7 @@ import java.util.List;
 public interface UserMapper {
     @Select("SELECT * FROM user")       //查询所有数据
     List<User> findAll();
-    @Select("SELECT DISTINCT organization FROM user WHERE organization NOT LIKE ''")
+    @Select("SELECT DISTINCT organization FROM user WHERE organization NOT LIKE '无'")
     List<User> findOrg();
     @Select("SELECT DISTINCT identity FROM user WHERE identity NOT LIKE '超级管理员'")
     List<User> findIdentity();

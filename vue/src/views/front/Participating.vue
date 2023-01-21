@@ -17,12 +17,7 @@
       <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
       <el-table-column prop="address" label="活动地址" width="100" align="center"></el-table-column>
       <el-table-column prop="detail" label="活动详情"></el-table-column>
-      <el-table-column label="操作" width="150" align="center">
-        <template slot-scope="scope">
-          <el-button type="danger" @click="cancelSign(scope.row)">取消报名<i class="el-icon-remove-outline"></i></el-button>
-        </template>
-      </el-table-column>
-
+      <el-table-column prop="qualification" label="备注" width="100" align="center"></el-table-column>
     </el-table>
 
     <!-- 分页行 -->
@@ -42,7 +37,7 @@
 
 <script>
   export default {
-    name: "SignUp",
+    name: "Participating",
     data(){
       return {
         tableData: [],
@@ -52,11 +47,10 @@
         activityName: '',
         organizer: '',
         address: '',
-        pageShow: 0,       // 0已报名列表，1已参加列表
+        pageShow: 1,       // 0已报名列表，1已参加列表
         signDTO:{
           activityID: '',
           userID: '',
-          code:'1',       // 0报名、1取消报名
         },
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
       }
@@ -96,19 +90,6 @@
         this.organizer = ""
         this.address = ""
         this.load()
-      },
-      cancelSign(row){
-        this.signDTO.activityID = row.activityID;
-        this.signDTO.userID = this.userLogin.userID;
-        this.request.post("/sign/save",this.signDTO).then(res =>{
-          if (res){
-            this.$message.success("取消报名成功")
-            this.load()
-            window.location.reload()      // 刷新页面
-          }else{
-            this.$message.error("取消报名失败")
-          }
-        })
       },
     }
   }

@@ -1,0 +1,204 @@
+<template>
+  <div>
+    <el-descriptions class="margin-top" :column="2" size="large" border contentStyle="text-align:center;"
+                     labelStyle="text-align:center;max-width: 100px;font-weight:bold" >
+      <template slot="title" >
+        <span style="font-size: 24px;">个人信息</span>
+      </template>
+      <template slot="extra" >
+        <el-button type="primary" size="medium" @click="drawerVisible = true">修改</el-button>
+      </template>
+
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-user"></i> 用户ID
+        </template>
+        {{ userLogin.userID }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-user"></i> 用户名
+        </template>
+        {{ userLogin.username }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-user"></i> 用户昵称
+        </template>
+        {{ userLogin.nickname }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-mobile-phone"></i> 手机号
+        </template>
+        {{ userLogin.phone }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-location-outline"></i> 用户身份
+        </template>
+        {{ userLogin.identity }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-tickets"></i> 所在社团组织
+        </template>
+        <el-tag size="medium"><b style="font-size: 14px;">{{ userLogin.organization }}</b></el-tag>
+      </el-descriptions-item>
+
+    </el-descriptions>
+
+    <el-drawer :before-close="handleClose" :visible.sync="drawerVisible" direction="rtl" size="35%">
+      <template slot="title" >
+        <b style="font-size: 20px;">修改个人信息</b>
+      </template>
+      <div class="demo-drawer__content" style="padding: 0 30px">
+        <el-form :model="form" :rules="rules" ref="user" label-width="auto" size="medium">
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="form.username"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="form.password" show-password></el-input>
+          </el-form-item>
+          <el-form-item label="昵称" prop="nickname">
+            <el-input v-model="form.nickname"></el-input>
+          </el-form-item>
+          <el-form-item label="电话" prop="phone">
+            <el-input v-model="form.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="用户身份">
+            <el-input v-model="form.identity" :disabled="true"></el-input>
+          </el-form-item>
+          <el-form-item label="所在社团组织">
+            <el-input v-model="form.organization" :disabled="true"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="demo-drawer__footer" style="align-items: center; display: flex; justify-content:center">
+        <el-button size="medium" @click="handleClose" style="width: 44%">取 消</el-button>
+        <el-button size="medium" type="primary" @click="dialogVisible = true" style="width: 44%">确 定</el-button>
+      </div>
+
+    </el-drawer>
+
+<!--    提交修改信息确认框-->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" center>
+      <div style="font-size: 16px;text-align: center">您确认要修改信息吗?</div>
+      <span slot="footer" class="dialog-footer">
+          <el-button size="medium" @click="dialogVisible = false">取 消</el-button>
+          <el-button size="medium" type="primary" @click="saveForm">确 定</el-button>
+      </span>
+    </el-dialog>
+
+  </div>
+</template>
+
+<script>
+  export default {
+    name: "Person",
+    data(){
+      return {
+        userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
+        dialogVisible: false,
+        drawerVisible: false,
+        form: {
+          userID:'',
+          username: '',
+          password: '',
+          nickname: '',
+          phone: '',
+          identity: '',
+          organization: '',
+        },
+
+        // 修改规则
+        rules: {
+          username: [
+            {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+          ],
+          password: [
+            {
+              validator: function(rule, value, callback) {
+                if (value == null){     // 用户不更改密码
+                  callback();
+                }else if (/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{3,20}$/.test(value) == false) {   // 用户更改密码
+                  callback(new Error("请输入3-20位，数字和字母组合"));
+                } else {          //校验通过
+                  callback();
+                }
+              },
+              trigger: "blur"
+            }
+          ],
+          nickname: [
+            {
+              validator: function(rule, value, callback) {
+                if (/^[0-9]*$/.test(value) == true) {
+                  callback(new Error("请输入中文或字母"));
+                } else {          //校验通过
+                  callback();
+                }
+              },
+              trigger: "blur"
+            }
+          ],
+          phone: [
+            {
+              validator: function(rule, value, callback) {
+                if (/^1[3|4|5|7|8][0-9]{9}$/.test(value) == false) {
+                  callback(new Error("请输入正确的手机号码"));
+                } else {          //校验通过
+                  callback();
+                }
+              },
+              trigger: "blur"
+            }
+          ],
+        },
+      }
+    },
+    created() {
+      this.load()
+    },
+    methods:{
+      load(){
+        this.form = this.userLogin
+      },
+
+      saveForm(){
+        this.$refs['user'].validate((valid) => {
+          if (valid) {      // 表单校验合法
+            this.request.post("/user/save",this.form).then(res =>{
+              if (res){    // 数据库没有相同的用户名
+                this.$message.success("恭喜您，修改成功")
+                localStorage.setItem("userLogin", JSON.stringify(res))  // 存储用户信息到浏览器（把对象转为json存储）
+                this.drawerVisible = false
+                this.dialogVisible = false
+                this.load()
+              } else {    // 存在相同用户名
+                this.$message.error("用户名已存在，修改失败")
+                this.dialogVisible = false
+              }
+            })
+          }// if(valid)
+        });
+      },
+      handleClose() {
+        this.drawerVisible = false
+        window.location.reload()      // 刷新页面
+      },
+    }
+  }
+</script>
+
+<style scoped>
+.margin-top{
+  width: 50%;
+  padding: 10px;
+  margin: 50px auto;
+  font-size: 15px;
+}
+
+
+
+</style>
