@@ -92,7 +92,7 @@ export default {
           { required: true, message: '请输入昵称', trigger: 'blur'},
           {
             validator: function(rule, value, callback) {
-              if (/^[0-9]*$/.test(value) == true) {
+              if (/^[0-9]*$/.test(value) == true) {     // 如果全是数字就报错
                 callback(new Error("请输入中文或字母"));
               } else {          //校验通过
                 callback();
@@ -137,7 +137,6 @@ export default {
   methods: {
     load(){
       this.request.get("/user/identity").then(list =>{    // 查询身份数据
-        console.log(list)
         this.identityList = list
       })
     },

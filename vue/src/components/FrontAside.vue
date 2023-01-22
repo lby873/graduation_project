@@ -14,7 +14,7 @@
     </div>
     <div>
       <el-menu-item index="/home">
-        <i class="el-icon-menu"></i>
+        <i class="el-icon-s-home"></i>
         <span slot="title"><b style="font-size: 17px; ">活动首页</b></span>
       </el-menu-item>
       <el-menu-item index="/sign">

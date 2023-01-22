@@ -39,7 +39,7 @@ public interface UserMapper {
     Integer selectTotal(String username, String nickname, String phone, String identity, String organization);
 
     @Select("SELECT * FROM user WHERE (username LIKE #{username} AND password LIKE #{password} AND" +
-            " identity LIKE #{identity})")
+            " identity LIKE concat('%', #{identity}, '%'))")
     User loginData(String username, String password, String identity);  // 检查登录信息
 
 

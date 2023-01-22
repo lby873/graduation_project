@@ -1,5 +1,6 @@
 <template>
   <div>
+<!--    前端对contentStyle和labelStyle报错，未解决    -->
     <el-descriptions class="margin-top" :column="2" size="large" border contentStyle="text-align:center;"
                      labelStyle="text-align:center;max-width: 100px;font-weight:bold" >
       <template slot="title" >
@@ -11,7 +12,7 @@
 
       <el-descriptions-item>
         <template slot="label">
-          <i class="el-icon-user"></i> 用户ID
+          <i class="el-icon-cpu"></i> 用户ID
         </template>
         {{ userLogin.userID }}
       </el-descriptions-item>
@@ -23,7 +24,7 @@
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
-          <i class="el-icon-user"></i> 用户昵称
+          <i class="el-icon-user-solid"></i> 用户昵称
         </template>
         {{ userLogin.nickname }}
       </el-descriptions-item>
@@ -41,10 +42,17 @@
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
-          <i class="el-icon-tickets"></i> 所在社团组织
+          <i class="el-icon-edit"></i> 用户密码
+        </template>
+        <el-button size="mini" @click="pwDialogVisible = true"><b style="font-size: 14px;">点击修改密码</b></el-button>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-school"></i> 所在社团组织
         </template>
         <el-tag size="medium"><b style="font-size: 14px;">{{ userLogin.organization }}</b></el-tag>
       </el-descriptions-item>
+
 
     </el-descriptions>
 
@@ -57,9 +65,9 @@
           <el-form-item label="用户名" prop="username">
             <el-input v-model="form.username"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="form.password" show-password></el-input>
-          </el-form-item>
+<!--          <el-form-item label="密码" prop="password">-->
+<!--            <el-input v-model="form.password" show-password></el-input>-->
+<!--          </el-form-item>-->
           <el-form-item label="昵称" prop="nickname">
             <el-input v-model="form.nickname"></el-input>
           </el-form-item>
@@ -81,6 +89,22 @@
 
     </el-drawer>
 
+<!--    提交修改密码表单-->
+    <el-dialog title="修改密码" :visible.sync="pwDialogVisible" width="30%" center>
+      <el-form :model="pwForm" :rules="rulesPw" ref="pwForm" label-width="auto" size="medium" >
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input v-model="pwForm.oldPassword" show-password />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="pwForm.newPassword" show-password />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+          <el-button size="medium" @click="pwDialogVisible = false" style="width: 47%">取 消</el-button>
+          <el-button size="medium" type="primary" @click="savePwForm" style="width: 47%">确 定</el-button>
+      </span>
+    </el-dialog>
+
 <!--    提交修改信息确认框-->
     <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" center>
       <div style="font-size: 16px;text-align: center">您确认要修改信息吗?</div>
@@ -89,6 +113,7 @@
           <el-button size="medium" type="primary" @click="saveForm">确 定</el-button>
       </span>
     </el-dialog>
+
 
   </div>
 </template>
@@ -101,39 +126,34 @@
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
         dialogVisible: false,
         drawerVisible: false,
+        pwDialogVisible: false,    // 密码修改对话框
+        userPwd:{         // 实现旧密码验证，新密码提交修改
+          userID: '',
+          username: '',
+          password: '',
+          identity:'',
+        },
         form: {
           userID:'',
           username: '',
-          password: '',
           nickname: '',
           phone: '',
           identity: '',
           organization: '',
         },
-
-        // 修改规则
+        pwForm:{
+          oldPassword: '',
+          newPassword: '',
+        },
+        // 修改个人信息规则
         rules: {
           username: [
             {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
           ],
-          password: [
-            {
-              validator: function(rule, value, callback) {
-                if (value == null){     // 用户不更改密码
-                  callback();
-                }else if (/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{3,20}$/.test(value) == false) {   // 用户更改密码
-                  callback(new Error("请输入3-20位，数字和字母组合"));
-                } else {          //校验通过
-                  callback();
-                }
-              },
-              trigger: "blur"
-            }
-          ],
           nickname: [
             {
               validator: function(rule, value, callback) {
-                if (/^[0-9]*$/.test(value) == true) {
+                if (/^[0-9]*$/.test(value) == true) {       // 如果全是数字就报错
                   callback(new Error("请输入中文或字母"));
                 } else {          //校验通过
                   callback();
@@ -155,6 +175,36 @@
             }
           ],
         },
+        // 修改密码规则
+        rulesPw:{
+          oldPassword: [
+            {
+              required: true,
+              validator: function(rule, value, callback) {
+                if (/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{3,20}$/.test(value) == false) {
+                  callback(new Error("请输入3-20位，数字和字母组合"));
+                } else {          //校验通过
+                  callback();
+                }
+              },
+              trigger: "blur"
+            }
+          ],
+          newPassword: [
+            {
+              required: true,
+              validator: function(rule, value, callback) {
+                if (/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{3,20}$/.test(value) == false) {
+                  callback(new Error("请输入3-20位，数字和字母组合"));
+                } else {          //校验通过
+                  callback();
+                }
+              },
+              trigger: "blur"
+            }
+          ],
+        }
+
       }
     },
     created() {
@@ -162,16 +212,22 @@
     },
     methods:{
       load(){
-        this.form = this.userLogin
+        this.form = this.userLogin    // 抽屉的内容
+        this.userPwd.userID = this.userLogin.userID
+        this.userPwd.username = this.userLogin.username
+      },
+      handleClose() {   // 关闭抽屉
+        this.drawerVisible = false
+        window.location.reload()      // 刷新页面
       },
 
-      saveForm(){
+      saveForm(){     // 提交抽屉表单
         this.$refs['user'].validate((valid) => {
           if (valid) {      // 表单校验合法
             this.request.post("/user/save",this.form).then(res =>{
-              if (res){    // 数据库没有相同的用户名
+              if (res){    // 用户名不重复，或没有修改
                 this.$message.success("恭喜您，修改成功")
-                localStorage.setItem("userLogin", JSON.stringify(res))  // 存储用户信息到浏览器（把对象转为json存储）
+                localStorage.setItem("userLogin", JSON.stringify(this.form))  // 重新存储用户信息到浏览器
                 this.drawerVisible = false
                 this.dialogVisible = false
                 this.load()
@@ -183,10 +239,27 @@
           }// if(valid)
         });
       },
-      handleClose() {
-        this.drawerVisible = false
-        window.location.reload()      // 刷新页面
-      },
+
+      savePwForm(){     // 提交密码表单
+        this.$refs['pwForm'].validate((valid) => {
+          if (valid) {      // 表单校验合法
+            this.userPwd.password = this.pwForm.oldPassword
+            this.request.post("/user/login",this.userPwd).then(res =>{   // 验证账号密码是否正确
+              if (res !== null){     // 旧密码验证正确
+                this.userPwd.password = this.pwForm.newPassword     // 提交新密码
+                this.request.post("/user/save",this.userPwd).then(res =>{
+                  if (res){
+                    this.$message.success("恭喜您，修改成功")
+                    this.pwDialogVisible = false
+                  }
+                })
+              } else {    // 旧密码验证不通过
+                this.$message.error("旧密码错误，修改失败")
+              }
+            })
+          }// if(valid)
+        });
+      }
     }
   }
 </script>
