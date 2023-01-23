@@ -231,7 +231,6 @@
         this.form = this.userLogin    // 抽屉的内容
         this.userPwd.userID = this.userLogin.userID
         this.userPwd.username = this.userLogin.username
-        console.log(this.userLogin.identity)
 
         if (this.userLogin.identity === "普通用户"){
           this.memberBtnVisible = false;
@@ -277,7 +276,9 @@
           if (valid) {      // 表单校验合法
             this.userPwd.password = this.pwForm.oldPassword
             this.request.post("/user/login",this.userPwd).then(res =>{   // 验证账号密码是否正确
-              if (res !== null){     // 旧密码验证正确
+              if (res.userID == null){     // 旧密码验证不正确
+                this.$message.error("旧密码错误，修改失败")
+              } else {    // 旧密码验证通过
                 this.userPwd.password = this.pwForm.newPassword     // 提交新密码
                 this.request.post("/user/save",this.userPwd).then(res =>{
                   if (res){
@@ -286,8 +287,6 @@
                     this.pwForm={}
                   }
                 })
-              } else {    // 旧密码验证不通过
-                this.$message.error("旧密码错误，修改失败")
               }
             })
           }// if(valid)

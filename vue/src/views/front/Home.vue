@@ -45,10 +45,11 @@
     name: "Home",
     data(){
       return {
+        userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
         tableData: [],
         total: 0,
         pageNum: 1,
-        pageSize: 5,
+        pageSize: 3,
         activityName: '',
         organizer: '',
         address: '',
@@ -63,7 +64,6 @@
           userNickname:'',
           code:'0',       // 0报名、1取消报名
         },
-        userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
       }
     },
     created() {   // 请求分页查询数据

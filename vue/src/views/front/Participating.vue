@@ -17,7 +17,7 @@
       <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
       <el-table-column prop="address" label="活动地址" width="100" align="center"></el-table-column>
       <el-table-column prop="detail" label="活动详情"></el-table-column>
-      <el-table-column prop="qualification" label="备注" width="100" align="center"></el-table-column>
+      <el-table-column prop="status" label="用户状态" width="100" align="center"></el-table-column>
     </el-table>
 
     <!-- 分页行 -->
@@ -43,7 +43,7 @@
         tableData: [],
         total: 0,
         pageNum: 1,
-        pageSize: 5,
+        pageSize: 3,
         activityName: '',
         organizer: '',
         address: '',
@@ -55,7 +55,7 @@
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
       }
     },
-    created() {   // 请求分页查询数据
+    created() {
       this.load()
     },
     methods:{

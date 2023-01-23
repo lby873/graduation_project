@@ -7,7 +7,7 @@
       <div style="text-align:right;font-size: 16px">
         <span><b>欢迎您，{{userLogin.nickname}}</b></span><i class="el-icon-arrow-down" style="margin-left: 10px"></i>
       </div>
-      <el-dropdown-menu slot="dropdown" style="width: 90px; margin-right: 10px">
+      <el-dropdown-menu slot="dropdown" style="width: 100px; margin-right: 10px">
         <el-dropdown-item style="font-size: 14px; padding: 5px 10px;text-align: center">
           <b @click="logout">退出</b>
         </el-dropdown-item>
@@ -31,9 +31,6 @@ export default {
       localStorage.removeItem("userLogin")
       this.$message.success("退出成功")
     },
-    person(){
-      this.$router.push("/person")
-    }
   },
   props: {
     collapseBtnClass: String,

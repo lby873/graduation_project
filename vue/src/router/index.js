@@ -8,11 +8,12 @@ import Participating from "@/views/front/Participating.vue";
 import Login from "@/views/front/Login.vue";
 import Person from "@/views/front/Person.vue";
 import AddActivity from "@/views/front/AddActivity.vue";
+import OrgSignPart from "@/views/front/OrgSignPart.vue";
 
 import UserAdmin from "@/views/UserAdmin.vue";
 import AdminManage from "@/views/AdminManage.vue";
 import ActivityAdmin from "@/views/ActivityAdmin.vue";
-
+import SignPartAdmin from "@/views/SignPartAdmin.vue";
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,7 @@ const routes = [
             {path: 'part', name:'已参加活动', component: Participating},
             {path: 'person', name:'个人信息', component: Person},
             {path: 'addActivity', name:'发布活动', component: AddActivity},
+            {path: 'orgSignPart', name:'报名参与人员', component: OrgSignPart},
         ]
     },
     {
@@ -36,6 +38,7 @@ const routes = [
         children: [
             {path: 'userAdmin', name:'用户管理', component: UserAdmin},
             {path: 'activityAdmin', name:'活动事项管理', component: ActivityAdmin},
+            {path: 'signPartAdmin', name:'活动报名参与人员', component: SignPartAdmin},
         ]
     },
     {

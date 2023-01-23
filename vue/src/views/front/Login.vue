@@ -154,7 +154,7 @@ export default {
             } else {
               this.$message.success("恭喜您，登录成功")
               localStorage.setItem("userLogin", JSON.stringify(res))  // 存储用户信息到浏览器（把对象转为json存储）
-              if (res.identity == "社团管理员"){
+              if (res.identity == "社团管理员"){   // 如果是社团管理员，则跳转到发布活动页面
                 this.$router.push("/addActivity")
               } else {
                 this.$router.push("/home")

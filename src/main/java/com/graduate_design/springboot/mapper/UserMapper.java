@@ -14,7 +14,7 @@ public interface UserMapper {
     List<User> findAll();
     @Select("SELECT DISTINCT organization FROM user WHERE organization NOT LIKE '无'")
     List<User> findOrg();
-    @Select("SELECT DISTINCT identity FROM user WHERE identity NOT LIKE '超级管理员'")
+    @Select("SELECT DISTINCT identity FROM user WHERE identity NOT LIKE ''")
     List<User> findIdentity();
     @Select("SELECT * FROM user WHERE username LIKE #{username}")
     User checkUsername(String username);

@@ -5,24 +5,32 @@
         <el-input style="width: 200px;" placeholder="请输入活动名称" suffix-icon="el-icon-search" v-model="activityName"></el-input>
         <el-input style="width: 200px;margin-left: 20px;" placeholder="请输入社团名称" suffix-icon="el-icon-search" v-model="organizer"></el-input>
         <el-input style="width: 200px;margin-left: 20px;" placeholder="请输入地点" suffix-icon="el-icon-search" v-model="address"></el-input>
+        <el-input style="width: 200px;margin-left: 20px;" placeholder="请输入用户状态" suffix-icon="el-icon-search" v-model="status"></el-input>
       </template>
       <el-button style="margin-left: 20px;" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="activityID" label="活动ID" width="60" align="center"></el-table-column>
-      <el-table-column prop="activityTime" label="活动时间" width="100" align="center"></el-table-column>
-      <el-table-column prop="activityName" label="活动名称" width="120" align="center"></el-table-column>
-      <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
-      <el-table-column prop="address" label="活动地址" width="100" align="center"></el-table-column>
-      <el-table-column prop="detail" label="活动详情"></el-table-column>
-      <el-table-column label="操作" width="150" align="center">
+      <el-table-column prop="activityID" label="活动ID" align="center"></el-table-column>
+      <el-table-column prop="activityTime" label="活动时间" align="center"></el-table-column>
+      <el-table-column prop="activityName" label="活动名称" width="150" align="center"></el-table-column>
+      <el-table-column prop="organizer" label="主办方社团" align="center"></el-table-column>
+      <el-table-column prop="address" label="活动地址" align="center"></el-table-column>
+      <el-table-column prop="userID" label="用户ID" align="center"></el-table-column>
+      <el-table-column prop="userNickName" label="用户昵称" align="center"></el-table-column>
+      <el-table-column prop="status" label="用户状态" align="center"></el-table-column>
+      <el-table-column label="操作" align="center" width="300">
         <template slot-scope="scope">
-          <el-button type="danger" @click="cancelSign(scope.row)">取消报名<i class="el-icon-remove-outline"></i></el-button>
+          <el-popconfirm confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info" icon-color="red"
+                         title="您确定取消其参赛资格吗？" @confirm="cancelQualification(scope.row.signID)">
+            <el-button type="danger" slot="reference">取消参赛资格<i class="el-icon-remove-outline"></i></el-button>
+          </el-popconfirm>
+          <el-button style="margin-left: 10px" type="success" @click="resetQualification(scope.row.signID)">
+            恢复参赛资格<i class="el-icon-edit"></i>
+          </el-button>
         </template>
       </el-table-column>
-
     </el-table>
 
     <!-- 分页行 -->
@@ -42,40 +50,37 @@
 
 <script>
   export default {
-    name: "SignUp",
+    name: "SignPartAdmin",
     data(){
       return {
         tableData: [],
         total: 0,
         pageNum: 1,
-        pageSize: 3,
+        pageSize: 5,
         activityName: '',
         organizer: '',
-        address: '',
-        pageShow: 0,       // 0已报名列表，1已参加列表
-        signDTO:{
+        address:'',
+        status:'',
+        signDTO:{       // 用于取消参赛资格
           activityID: '',
           userID: '',
-          code:'1',       // 0报名、1取消报名
         },
-        userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
       }
     },
-    created() {   // 请求分页查询数据
+    created() {
       this.load()
     },
     methods:{
       load(){
         // 用axios请求数据
-        this.request.get("/sign/page",{
+        this.request.get("/sign/allPage",{
           params: {
             pageNum: this.pageNum,
             pageSize: this.pageSize,
-            userID: this.userLogin.userID,
             activityName: this.activityName,
             organizer: this.organizer,
             address: this.address,
-            pageShow: this.pageShow,
+            status: this.status,
           }
         }).then(res => {
           this.tableData = res.data
@@ -95,18 +100,23 @@
         this.activityName = ""
         this.organizer = ""
         this.address = ""
+        this.status = ""
         this.load()
       },
-      cancelSign(row){
-        this.signDTO.activityID = row.activityID;
-        this.signDTO.userID = this.userLogin.userID;
-        this.request.post("/sign/save",this.signDTO).then(res =>{
+
+      cancelQualification(signID){
+        this.request.get("/sign/cancelQualification",{params: { signID: signID }}).then(res => {
           if (res){
-            this.$message.success("取消报名成功")
-            this.load()
+            this.$message.success("修改成功")
             window.location.reload()      // 刷新页面
-          }else{
-            this.$message.error("取消报名失败")
+          }
+        })
+      },
+      resetQualification(signID){
+        this.request.get("/sign/resetQualification",{params: { signID: signID }}).then(res => {
+          if (res){
+            this.$message.success("修改成功")
+            window.location.reload()      // 刷新页面
           }
         })
       },

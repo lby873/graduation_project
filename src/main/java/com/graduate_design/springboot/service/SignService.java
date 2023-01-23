@@ -55,6 +55,26 @@ public class SignService {
         res.put("data", data);
         res.put("total", total);
         return res;
+    }
 
+    // 所有活动报名参与记录列表
+    public Map<String, Object> findAllPage(Integer pageNum, Integer pageSize, String activityName,
+                                           String organizer, String address, String status) {
+        pageNum = (pageNum - 1) * pageSize;
+        List<Sign> data = signMapper.findAll(pageNum, pageSize, activityName, organizer, address,status);
+        Integer total = signMapper.selectTotal(activityName, organizer, address,status);
+        Map<String, Object> res = new HashMap<>();
+        res.put("data", data);
+        res.put("total", total);
+        return res;
+    }
+
+
+    public Boolean cancelQualification(Integer signID) {
+        return signMapper.cancelQualification(signID);
+    }
+
+    public Boolean resetQualification(Integer signID) {
+        return signMapper.resetQualification(signID);
     }
 }

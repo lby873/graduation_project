@@ -13,19 +13,23 @@
       <b style="color: white; font-size: 24px" v-show="logoTextShow"> 社团活动报名系统</b>
     </div>
     <div>
-      <el-menu-item index="/addActivity" v-show="addActivityVisible">
+      <el-menu-item index="/addActivity" v-show="orgAdminVisible">
         <i class="el-icon-s-promotion"></i>
         <span slot="title"><b style="font-size: 18px;"> 发布活动</b></span>
       </el-menu-item>
-      <el-menu-item index="/home" v-show="homeVisible">
+      <el-menu-item index="/orgSignPart" v-show="orgAdminVisible">
+        <i class="el-icon-document"></i>
+        <span slot="title"><b style="font-size: 18px;"> 报名参与人员</b></span>
+      </el-menu-item>
+      <el-menu-item index="/home" v-show="userVisible">
         <i class="el-icon-s-home"></i>
         <span slot="title"><b style="font-size: 18px; "> 活动首页</b></span>
       </el-menu-item>
-      <el-menu-item index="/sign" v-show="signVisible">
+      <el-menu-item index="/sign" v-show="userVisible">
         <i class="el-icon-document"></i>
         <span slot="title"><b style="font-size: 18px;"> 已报名活动</b></span>
       </el-menu-item>
-      <el-menu-item index="/part" v-show="partVisible">
+      <el-menu-item index="/part" v-show="userVisible">
         <i class="el-icon-setting"></i>
         <span slot="title"><b style="font-size: 18px;"> 已参加活动</b></span>
       </el-menu-item>
@@ -45,10 +49,8 @@
     data(){
       return{
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
-        addActivityVisible: false,
-        homeVisible: true,
-        signVisible: true,
-        partVisible: true,
+        orgAdminVisible: false,
+        userVisible: true,
       }
     },
     created() {
@@ -57,10 +59,8 @@
     methods:{
       load(){
         if (this.userLogin.identity === "社团管理员"){
-          this.addActivityVisible = true;
-          this.homeVisible = false;
-          this.signVisible = false;
-          this.partVisible = false;
+          this.orgAdminVisible = true;
+          this.userVisible = false;
         }
       }
     },

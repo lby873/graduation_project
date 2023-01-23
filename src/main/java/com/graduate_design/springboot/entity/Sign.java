@@ -13,7 +13,6 @@ public class Sign {
     private String detail;
     private Integer userID;
     private String userNickName;
-    private String participatingStatus;
-    private String  qualification;
+    private String status;
 
 }

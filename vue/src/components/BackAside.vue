@@ -25,8 +25,8 @@
       <el-menu-item index="/admin/activityAdmin" style="text-align: center">
         <i class="el-icon-tickets"></i><b style="font-size: 15px">活动事项</b>
       </el-menu-item>
-      <el-menu-item index="/admin/participantAdmin" style="text-align: center">
-        <i class="el-icon-user"></i><b style="font-size: 15px">活动参与人员</b>
+      <el-menu-item index="/admin/signPartAdmin" style="text-align: center">
+        <i class="el-icon-user"></i><b style="font-size: 15px">活动报名参与人员</b>
       </el-menu-item>
     </el-submenu>
   </el-menu>
