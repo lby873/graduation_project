@@ -11,7 +11,7 @@
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="id" label="活动ID" width="60"></el-table-column>
+      <el-table-column prop="activityID" label="活动ID" width="60"></el-table-column>
       <el-table-column prop="time" label="活动时间" width="100"></el-table-column>
       <el-table-column prop="name" label="活动名称" width="100"></el-table-column>
       <el-table-column prop="organizer" label="主办方社团" width="100"></el-table-column>
@@ -19,8 +19,8 @@
       <el-table-column prop="detail" label="活动详情"></el-table-column>
       <el-table-column label="操作"  width="200" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="sign">报名<i class="el-icon-edit"></i></el-button>
-          <!--          <el-button type="danger" @click="cancelSign">取消报名<i class="el-icon-remove-outline"></i></el-button>-->
+          <el-button type="success" >修改<i class="el-icon-edit"></i></el-button>
+          <el-button type="danger" >删除<i class="el-icon-remove-outline"></i></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,9 +88,6 @@ export default {
       this.organizer = ""
       this.address = ""
       this.load()
-    },
-    sign(){
-      this.request.post("/participant/update")
     },
 
   }

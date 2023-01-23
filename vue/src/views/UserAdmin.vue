@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div style="margin: 10px 0">
       <template>
         <el-input style="width: 200px;" placeholder="请输入用户名" suffix-icon="el-icon-search" v-model="user_name"></el-input>
@@ -25,7 +24,7 @@
     <div style="margin: 10px 0">
       <el-button type="primary" @click="handleAdd">新增用户 <i class="el-icon-circle-plus-outline"></i></el-button>
     </div>
-
+<!--    用户数据表-->
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
       <el-table-column prop="userID" label="用户ID"></el-table-column>
       <el-table-column prop="username" label="用户名" ></el-table-column>
@@ -36,17 +35,16 @@
       <el-table-column label="操作"  width="200" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">修改<i class="el-icon-edit"></i></el-button>
+          <!--                scope.row.userID 获取对应记录的id-->
           <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
                          icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row.userID)">
-            <!--                scope.row.userID 获取对应记录的id-->
             <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
           </el-popconfirm>
-
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 分页行 -->
+<!--    分页行 -->
     <div style="padding: 10px 0">
       <el-pagination
           @size-change="handleSizeChange"
@@ -59,22 +57,23 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%" >
+<!--    用户新增、修改，同个表单-->
+    <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%" center>
       <el-form :model="form" :rules="rules" ref="userForm" label-width="auto" size="small">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username"></el-input>
+          <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password" :rules="[{required: pwRequired, message: '请输入密码', trigger: 'blur'}]">
-          <el-input v-model="form.password" show-password></el-input>
+          <el-input v-model="form.password" show-password placeholder="请输入密码（若无需修改，则不填）"></el-input>
         </el-form-item>
         <el-form-item label="昵称" prop="nickname">
-          <el-input v-model="form.nickname"></el-input>
+          <el-input v-model="form.nickname" placeholder="请输入昵称"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
-          <el-input v-model="form.phone" type="number"></el-input>
+          <el-input v-model="form.phone" type="number" placeholder="请输入电话"></el-input>
         </el-form-item>
         <el-form-item label="用户身份" prop="identity">
-          <el-select v-model="form.identity" @change="orgChange">
+          <el-select v-model="form.identity" @change="orgChange" placeholder="请选择用户身份">
             <el-option v-for="item in identityList" :key="item.identity" :label="item.identity"
                        :value="item.identity" >
             </el-option>
@@ -82,7 +81,7 @@
         </el-form-item>
         <el-form-item label="所属组织" prop="organization"
                       :rules="[ {required: orgRequired, message: '请选择社团', trigger: 'change'} ]">
-          <el-select v-model="form.organization" :disabled="orgDisabled">
+          <el-select v-model="form.organization" :disabled="orgDisabled" placeholder="请选择社团组织">
             <el-option v-for="item in orgList" :key="item.organization" :label="item.organization"
                        :value="item.organization" >
             </el-option>
@@ -90,8 +89,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelForm">取 消</el-button>
-        <el-button type="primary" @click="saveForm()">确 定</el-button>
+        <el-button size="medium"  @click="cancelForm" style="width: 47%">取 消</el-button>
+        <el-button size="medium" type="primary" @click="saveForm()" style="width: 47%">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -129,10 +128,12 @@ export default {
       },
       rules: {
         username: [
+          {required: true, message: '请输入用户名', trigger: 'blur'},
           {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
         ],
         password: [
           {
+            required: true,
             validator: function(rule, value, callback) {
               if (value == null){     // 用户不更改密码
                 callback();
@@ -147,6 +148,7 @@ export default {
         ],
         nickname: [
           {
+            required: true,
             validator: function(rule, value, callback) {
               if (/^[0-9]*$/.test(value) == true) {
                 callback(new Error("请输入中文或字母"));
@@ -159,6 +161,7 @@ export default {
         ],
         phone: [
           {
+            required: true,
             validator: function(rule, value, callback) {
               if (/^1[3|4|5|7|8][0-9]{9}$/.test(value) == false) {
                 callback(new Error("请输入正确的手机号码"));

@@ -42,5 +42,6 @@ public interface UserMapper {
             " identity LIKE concat('%', #{identity}, '%'))")
     User loginData(String username, String password, String identity);  // 检查登录信息
 
-
+    @Select("SELECT * FROM user WHERE organization LIKE #{organization}")
+    List<User> findMember(String organization);
 }

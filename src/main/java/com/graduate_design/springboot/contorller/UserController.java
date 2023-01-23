@@ -30,15 +30,19 @@ public class UserController {
     }
 
     // 删除
-    @DeleteMapping("/{id}")     //删除
-    public Boolean delete(@PathVariable Integer id) {
-        return userService.deleteById(id);
+    @DeleteMapping("/{activityID}")     //删除
+    public Boolean delete(@PathVariable Integer activityID) {
+        return userService.deleteById(activityID);
     }
 
     //查询
     @GetMapping
-    public List<User> index() {
+    public List<User> findAll() {
         return userService.findAll();
+    }
+    @GetMapping("/findMember")
+    public Map<String, Object> findMember(@RequestParam String organization) {
+        return userService.findMember(organization);
     }
     @GetMapping("/org")
     public List<User> findOrg(){

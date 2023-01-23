@@ -7,7 +7,11 @@
         <span style="font-size: 24px;">个人信息</span>
       </template>
       <template slot="extra" >
-        <el-button type="primary" size="medium" @click="drawerVisible = true">修改</el-button>
+        <el-button type="info" size="medium" @click="memberDialogVisible = true"
+                   style="font-size: 14px;" v-show="memberBtnVisible">
+          查看社团成员
+        </el-button>
+        <el-button type="primary" size="medium" @click="drawerVisible = true">修改个人信息</el-button>
       </template>
 
       <el-descriptions-item>
@@ -44,18 +48,20 @@
         <template slot="label">
           <i class="el-icon-edit"></i> 用户密码
         </template>
-        <el-button size="mini" @click="pwDialogVisible = true"><b style="font-size: 14px;">点击修改密码</b></el-button>
+        <el-button size="mini" @click="pwDialogVisible = true"><b style="font-size: 14px;">修改密码</b></el-button>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-school"></i> 所在社团组织
         </template>
-        <el-tag size="medium"><b style="font-size: 14px;">{{ userLogin.organization }}</b></el-tag>
+        <el-tag size="medium"><b style="font-size: 16px; ">{{ userLogin.organization }}</b></el-tag>
       </el-descriptions-item>
+
 
 
     </el-descriptions>
 
+<!--    抽屉表单内容-->
     <el-drawer :before-close="handleClose" :visible.sync="drawerVisible" direction="rtl" size="35%">
       <template slot="title" >
         <b style="font-size: 20px;">修改个人信息</b>
@@ -63,16 +69,13 @@
       <div class="demo-drawer__content" style="padding: 0 30px">
         <el-form :model="form" :rules="rules" ref="user" label-width="auto" size="medium">
           <el-form-item label="用户名" prop="username">
-            <el-input v-model="form.username"></el-input>
+            <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
           </el-form-item>
-<!--          <el-form-item label="密码" prop="password">-->
-<!--            <el-input v-model="form.password" show-password></el-input>-->
-<!--          </el-form-item>-->
           <el-form-item label="昵称" prop="nickname">
-            <el-input v-model="form.nickname"></el-input>
+            <el-input v-model="form.nickname" placeholder="请输入昵称"></el-input>
           </el-form-item>
           <el-form-item label="电话" prop="phone">
-            <el-input v-model="form.phone"></el-input>
+            <el-input v-model="form.phone" placeholder="请输入电话"></el-input>
           </el-form-item>
           <el-form-item label="用户身份">
             <el-input v-model="form.identity" :disabled="true"></el-input>
@@ -89,23 +92,23 @@
 
     </el-drawer>
 
-<!--    提交修改密码表单-->
+<!--    新密码提交表单-->
     <el-dialog title="修改密码" :visible.sync="pwDialogVisible" width="30%" center>
       <el-form :model="pwForm" :rules="rulesPw" ref="pwForm" label-width="auto" size="medium" >
         <el-form-item label="旧密码" prop="oldPassword">
-          <el-input v-model="pwForm.oldPassword" show-password />
+          <el-input v-model="pwForm.oldPassword" show-password placeholder="请输入旧密码"/>
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input v-model="pwForm.newPassword" show-password />
+          <el-input v-model="pwForm.newPassword" show-password placeholder="请输入新密码"/>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-          <el-button size="medium" @click="pwDialogVisible = false" style="width: 47%">取 消</el-button>
+          <el-button size="medium" @click="cancelPwForm" style="width: 47%">取 消</el-button>
           <el-button size="medium" type="primary" @click="savePwForm" style="width: 47%">确 定</el-button>
       </span>
     </el-dialog>
 
-<!--    提交修改信息确认框-->
+<!--    个人信息提交确认框-->
     <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" center>
       <div style="font-size: 16px;text-align: center">您确认要修改信息吗?</div>
       <span slot="footer" class="dialog-footer">
@@ -114,6 +117,16 @@
       </span>
     </el-dialog>
 
+<!--    社团成员列表-->
+    <el-dialog title="社团成员" :visible.sync="memberDialogVisible" width="65%" center>
+      <el-table :data="memberTableData" border stripe header-cell-class-name="headerBg">
+        <el-table-column prop="username" label="用户名" ></el-table-column>
+        <el-table-column prop="nickname" label="昵称"></el-table-column>
+        <el-table-column prop="phone" label="手机号码"></el-table-column>
+        <el-table-column prop="identity" label="用户身份"></el-table-column>
+        <el-table-column prop="organization" label="所属社团"></el-table-column>
+      </el-table>
+    </el-dialog>
 
   </div>
 </template>
@@ -124,9 +137,12 @@
     data(){
       return {
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
-        dialogVisible: false,
-        drawerVisible: false,
-        pwDialogVisible: false,    // 密码修改对话框
+        memberTableData: {},
+        memberBtnVisible: true,      // 社团成员按钮是否可见
+        memberDialogVisible: false,   // 社团成员框是否可见
+        dialogVisible: false,      // 个人信息提交确认框是否可见
+        drawerVisible: false,      // 抽屉是否可见
+        pwDialogVisible: false,    // 密码修改对话框是否可见
         userPwd:{         // 实现旧密码验证，新密码提交修改
           userID: '',
           username: '',
@@ -215,7 +231,23 @@
         this.form = this.userLogin    // 抽屉的内容
         this.userPwd.userID = this.userLogin.userID
         this.userPwd.username = this.userLogin.username
+        console.log(this.userLogin.identity)
+
+        if (this.userLogin.identity === "普通用户"){
+          this.memberBtnVisible = false;
+        } else {
+          this.memberBtnVisible = true;
+        }
+        // 获取成员列表
+        this.request.get("/user/findMember",{
+          params: {
+            organization: this.userLogin.organization,
+          }
+        }).then(res => {
+          this.memberTableData = res.data
+        })
       },
+
       handleClose() {   // 关闭抽屉
         this.drawerVisible = false
         window.location.reload()      // 刷新页面
@@ -251,6 +283,7 @@
                   if (res){
                     this.$message.success("恭喜您，修改成功")
                     this.pwDialogVisible = false
+                    this.pwForm={}
                   }
                 })
               } else {    // 旧密码验证不通过
@@ -259,7 +292,12 @@
             })
           }// if(valid)
         });
+      },
+      cancelPwForm(){
+        this.pwDialogVisible = false
+        this.pwForm={}
       }
+
     }
   }
 </script>
@@ -271,6 +309,7 @@
   margin: 50px auto;
   font-size: 15px;
 }
+
 
 
 

@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: "Header",
+  name: "BackHeader",
   data() {
     return {
 

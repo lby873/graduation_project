@@ -4,21 +4,25 @@
       <div style="margin: 10px 0 20px 0; text-align: center; font-size: 24px"><b>登 录</b></div>
       <el-form :model="user" :rules="rules_login" ref="userLogin" label-width="80px" size="small" style="padding-right: 20px">
         <el-form-item prop="username" label="用户名">
-          <el-input size="medium" prefix-icon="el-icon-user" v-model="user.username"></el-input>
+          <el-input size="medium" prefix-icon="el-icon-user"
+                    v-model="user.username" placeholder="请输入用户名">
+          </el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
-          <el-input size="medium" prefix-icon="el-icon-lock" show-password v-model="user.password"></el-input>
+          <el-input size="medium" prefix-icon="el-icon-lock" show-password
+                    v-model="user.password" placeholder="请输入密码">
+          </el-input>
         </el-form-item>
         <el-form-item label="用户身份" prop="identity">
-          <el-select v-model="user.identity">
+          <el-select v-model="user.identity" placeholder="请选择用户身份" >
             <el-option v-for="item in identityList" :key="item.identity"
                        :label="item.identity" :value="item.identity" >
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item style="margin: 10px 0; text-align: right">
-          <el-button type="warning" size="minster" @click="register">注册</el-button>
-          <el-button type="primary" size="minster" @click="login">登录</el-button>
+          <el-button type="warning" size="medium" @click="register">注册</el-button>
+          <el-button type="primary" size="medium" @click="login">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -26,16 +30,16 @@
     <el-dialog title="用户注册" :visible.sync="dialogFormVisible" width="30%" :append-to-body="true">
       <el-form :model="form" :rules="rules_register" ref="userRegister" label-width="auto" size="medium">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username"></el-input>
+          <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password" show-password></el-input>
+          <el-input v-model="form.password" show-password placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item label="昵称" prop="nickname">
-          <el-input v-model="form.nickname"></el-input>
+          <el-input v-model="form.nickname" placeholder="请输入昵称"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
-          <el-input v-model="form.phone"></el-input>
+          <el-input v-model="form.phone" placeholder="请输入电话"></el-input>
         </el-form-item>
         <el-form-item label="用户身份">
           <el-input v-model="form.identity" :disabled="true"></el-input>
@@ -150,7 +154,11 @@ export default {
             } else {
               this.$message.success("恭喜您，登录成功")
               localStorage.setItem("userLogin", JSON.stringify(res))  // 存储用户信息到浏览器（把对象转为json存储）
-              this.$router.push("/home")
+              if (res.identity == "社团管理员"){
+                this.$router.push("/addActivity")
+              } else {
+                this.$router.push("/home")
+              }
             }
           })
         }// if(valid)

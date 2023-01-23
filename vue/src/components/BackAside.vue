@@ -8,31 +8,27 @@
            router
   >
     <!--导航栏内容-->
-    <div style="height: 60px; line-height: 60px; text-align: center;">
+    <div style="height: 60px; line-height: 60px; text-align: center; margin-top: 10px">
       <img src="../assets/logo.png" alt="" style="width: 25px; position: relative; top: 5px; right: 5px">
-      <b style="color: white; font-size: 20px" v-show="logoTextShow">后台管理系统</b>
+      <b style="color: white; font-size: 24px" v-show="logoTextShow"> 后台管理系统</b>
     </div>
     <el-menu-item index="/admin/userAdmin">
       <i class="el-icon-s-custom" ></i>
-      <span slot="title"><b style="font-size: 18px; ">用户管理</b></span>
+      <span slot="title"><b style="font-size: 18px; "> 用户管理</b></span>
     </el-menu-item>
 
     <el-submenu index="">
       <template slot="title">
         <i class="el-icon-setting"></i>
-        <span slot="title"><b style="font-size: 18px">活动管理</b></span>
+        <span slot="title"><b style="font-size: 18px"> 活动管理</b></span>
       </template>
       <el-menu-item index="/admin/activityAdmin" style="text-align: center">
-        <i class="el-icon-tickets"></i><b>活动事项</b>
+        <i class="el-icon-tickets"></i><b style="font-size: 15px">活动事项</b>
       </el-menu-item>
       <el-menu-item index="/admin/participantAdmin" style="text-align: center">
-        <i class="el-icon-user"></i><b>活动参与人员</b>
+        <i class="el-icon-user"></i><b style="font-size: 15px">活动参与人员</b>
       </el-menu-item>
     </el-submenu>
-<!--    <el-menu-item index="">-->
-<!--      <i class="el-icon-document"></i>-->
-<!--      <span slot="title"><b style="font-size: 18px;">社团管理</b></span>-->
-<!--    </el-menu-item>-->
   </el-menu>
 </template>
 

@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: "Header",
+  name: "FrontHeader",
   data() {
     return {
       userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象

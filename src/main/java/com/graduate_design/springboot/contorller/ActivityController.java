@@ -21,7 +21,7 @@ public class ActivityController {
         return activityService.findAllActivity();
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public Boolean save(@RequestBody Activity activity){
         return activityService.save(activity);
     }
@@ -38,6 +38,13 @@ public class ActivityController {
                                         @RequestParam String organizer,
                                         @RequestParam String address) {
         return activityService.findPage(pageNum,pageSize,name,organizer,address);
+    }
+
+    @GetMapping("/orgPage")
+    public Map<String, Object> findOrgPage( @RequestParam Integer pageNum,
+                                            @RequestParam Integer pageSize,
+                                            @RequestParam String organizer) {
+        return activityService.findOrgPage(pageNum,pageSize,organizer);
     }
 
 }

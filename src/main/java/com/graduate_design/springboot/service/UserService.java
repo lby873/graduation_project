@@ -74,4 +74,10 @@ public class UserService {
         }
     }
 
+    public Map<String, Object> findMember(String organization) {
+        List<User> memberList = userMapper.findMember(organization);
+        Map<String, Object> res = new HashMap<>();
+        res.put("data", memberList);
+        return res;
+    }
 }

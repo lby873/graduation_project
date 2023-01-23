@@ -14,8 +14,8 @@ public interface ActivityMapper {
 
     Boolean update(Activity activity);      //在Activity.xml具体实现
 
-    @Delete("DELETE FROM activity WHERE activityID = #{id}")
-    Boolean deleteById(Integer id);
+    @Delete("DELETE FROM activity WHERE activityID = #{activityID}")
+    Boolean deleteById(Integer activityID);
 
     @Select("SELECT * FROM activity WHERE name LIKE concat('%', #{name}, '%') AND address LIKE concat('%',#{address},'%')  " +
             "AND organizer LIKE concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
@@ -25,5 +25,9 @@ public interface ActivityMapper {
             "AND address LIKE concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%')")
     Integer selectTotal(String name, String organizer, String address);
 
+    @Select("SELECT * FROM activity WHERE organizer LIKE #{organizer} limit #{pageNum}, #{pageSize}")
+    List<Activity> selectOrgPage(Integer pageNum, Integer pageSize, String organizer);
 
+    @Select("SELECT count(*) FROM activity WHERE organizer LIKE #{organizer}")
+    Integer selectOrgTotal(String organizer);
 }
