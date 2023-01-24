@@ -7,7 +7,7 @@ import SignUp from "@/views/front/SignUp.vue";
 import Participating from "@/views/front/Participating.vue";
 import Login from "@/views/front/Login.vue";
 import ActivityEnd from "@/views/front/ActivityEnd.vue";
-import Person from "@/views/front/PersonMsg.vue";
+import PersonMsg from "@/views/front/PersonMsg.vue";
 import AddActivity from "@/views/front/AddActivity.vue";
 import OrgSignPart from "@/views/front/OrgSignPart.vue";
 
@@ -29,7 +29,7 @@ const routes = [
             {path: 'home', name:'活动首页', component: Home},
             {path: 'sign', name:'已报名活动', component: SignUp},
             {path: 'part', name:'已参加活动', component: Participating},
-            {path: 'person', name:'个人信息', component: Person},
+            {path: 'person', name:'个人信息', component: PersonMsg},
             {path: 'end', name:'已结束活动', component: ActivityEnd},
             {path: 'addActivity', name:'发布活动', component: AddActivity},
             {path: 'orgSignPart', name:'报名参与人员', component: OrgSignPart},
