@@ -12,12 +12,13 @@ public interface SignMapper {
     // 还未报名的活动列表
     @Select("SELECT * FROM activity WHERE activityID NOT IN (SELECT activityID FROM sign WHERE userID = #{userID}) " +
             "AND name LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
-            "AND organizer LIKE concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
-    List<Activity> findActivity(Integer pageNum, Integer pageSize, Integer userID, String activityName, String organizer, String address);
+            "AND organizer LIKE concat('%', #{organizer}, '%') AND endStatus=#{endStatus} limit #{pageNum}, #{pageSize}")
+    List<Activity> findActivity(Integer pageNum, Integer pageSize, Integer userID, String activityName,
+                                String organizer, String address, String endStatus);
     @Select("SELECT count(*) FROM activity WHERE activityID NOT IN (SELECT activityID FROM sign WHERE userID = #{userID}) " +
             "AND name LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
-            "AND organizer LIKE concat('%', #{organizer}, '%')")
-    Integer selectTotalActivity(Integer userID, String activityName, String organizer, String address);
+            "AND organizer LIKE concat('%', #{organizer}, '%')  AND endStatus = #{endStatus}")
+    Integer selectTotalActivity(Integer userID, String activityName, String organizer, String address, String endStatus);
 
     // 已经报名的活动列表
     @Select("SELECT * FROM sign WHERE userID = #{userID} AND status = '' AND activityName LIKE " +
@@ -40,14 +41,12 @@ public interface SignMapper {
     Integer selectTotalPart(Integer userID, String activityName, String organizer, String address);
 
     // 所有活动报名参与记录列表
-    @Select("SELECT * FROM sign WHERE status LIKE concat('%', #{status}, '%') AND activityName " +
-            "LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') AND organizer LIKE " +
-            "concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
-    List<Sign> findAll(Integer pageNum, Integer pageSize, String activityName, String organizer, String address, String status);
-    @Select("SELECT count(*) FROM sign WHERE status LIKE concat('%', #{status}, '%')  AND " +
-            "activityName LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') AND " +
-            "organizer LIKE concat('%', #{organizer}, '%')")
-    Integer selectTotal(String activityName, String organizer, String address, String status);
+    @Select("SELECT * FROM sign WHERE activityName LIKE concat('%', #{activityName}, '%') AND address LIKE " +
+            "concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
+    List<Sign> findAll(Integer pageNum, Integer pageSize, String activityName, String organizer, String address);
+    @Select("SELECT count(*) FROM sign WHERE activityName LIKE concat('%', #{activityName}, '%') AND address LIKE " +
+            "concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%')")
+    Integer selectTotal(String activityName, String organizer, String address);
 
 
     @Delete("DELETE FROM sign WHERE userID = #{userID}")

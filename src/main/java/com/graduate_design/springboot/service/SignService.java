@@ -25,12 +25,12 @@ public class SignService {
         }
     }
 
-    // 活动列表
+    // 活动列表，返回activity对象列表
     public Map<String, Object> findActivityPage(Integer pageNum, Integer pageSize, Integer userID, String activityName,
-                                        String organizer,String address) {
+                                        String organizer,String address,String endStatus) {
         pageNum = (pageNum - 1) * pageSize;
-        List<Activity> data = signMapper.findActivity(pageNum, pageSize, userID, activityName, organizer, address);
-        Integer total = signMapper.selectTotalActivity(userID, activityName, organizer, address);
+        List<Activity> data = signMapper.findActivity(pageNum, pageSize, userID, activityName, organizer, address,endStatus);
+        Integer total = signMapper.selectTotalActivity(userID, activityName, organizer, address,endStatus);
         Map<String, Object> res = new HashMap<>();
         res.put("data", data);
         res.put("total", total);
@@ -38,7 +38,7 @@ public class SignService {
 
     }
 
-    // 已报名、已参加列表
+    // 已报名、已参加列表，返回sign对象列表
     public Map<String, Object> findPage(Integer pageNum, Integer pageSize, Integer userID, String activityName,
                                                 String organizer,String address,Integer pageShow) {
         pageNum = (pageNum - 1) * pageSize;
@@ -57,12 +57,12 @@ public class SignService {
         return res;
     }
 
-    // 所有活动报名参与记录列表
+    // 所有活动报名参与记录列表，返回sign对象列表
     public Map<String, Object> findAllPage(Integer pageNum, Integer pageSize, String activityName,
-                                           String organizer, String address, String status) {
+                                           String organizer, String address) {
         pageNum = (pageNum - 1) * pageSize;
-        List<Sign> data = signMapper.findAll(pageNum, pageSize, activityName, organizer, address,status);
-        Integer total = signMapper.selectTotal(activityName, organizer, address,status);
+        List<Sign> data = signMapper.findAll(pageNum, pageSize, activityName, organizer, address);
+        Integer total = signMapper.selectTotal(activityName, organizer, address);
         Map<String, Object> res = new HashMap<>();
         res.put("data", data);
         res.put("total", total);

@@ -40,13 +40,17 @@ public class ActivityService {
         return res;
     }
 
-    public Map<String, Object> findOrgPage(Integer pageNum, Integer pageSize, String organizer) {
-        pageNum = (pageNum - 1) * pageSize;
-        List<Activity> data = activityMapper.selectOrgPage(pageNum, pageSize,organizer);
-        Integer total = activityMapper.selectOrgTotal(organizer);
-        Map<String, Object>  res = new HashMap<>();
-        res.put("data", data);
-        res.put("total", total);
-        return res;
+//    public Map<String, Object> findOrgPage(Integer pageNum, Integer pageSize, String organizer) {
+//        pageNum = (pageNum - 1) * pageSize;
+//        List<Activity> data = activityMapper.selectOrgPage(pageNum, pageSize,organizer);
+//        Integer total = activityMapper.selectOrgTotal(organizer);
+//        Map<String, Object>  res = new HashMap<>();
+//        res.put("data", data);
+//        res.put("total", total);
+//        return res;
+//    }
+
+    public Boolean ending(Integer activityID) {
+        return activityMapper.ending(activityID);
     }
 }

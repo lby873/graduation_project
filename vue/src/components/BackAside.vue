@@ -29,6 +29,11 @@
         <i class="el-icon-user"></i><b style="font-size: 15px">活动报名参与人员</b>
       </el-menu-item>
     </el-submenu>
+
+    <el-menu-item index="/admin/organizationAdmin">
+      <i class="el-icon-office-building" ></i>
+      <span slot="title"><b style="font-size: 18px; "> 社团管理</b></span>
+    </el-menu-item>
   </el-menu>
 </template>
 

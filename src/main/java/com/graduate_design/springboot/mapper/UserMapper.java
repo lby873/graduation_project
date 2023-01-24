@@ -17,7 +17,7 @@ public interface UserMapper {
     @Select("SELECT DISTINCT identity FROM user WHERE identity NOT LIKE ''")
     List<User> findIdentity();
     @Select("SELECT * FROM user WHERE username LIKE #{username}")
-    User checkUsername(String username);
+    User checkUsername(String username);        // 判断用户名是否重复
 
     @Insert("INSERT INTO user(username,password,nickname,phone,identity,organization) " +
             "VALUES (#{username},#{password},#{nickname},#{phone},#{identity},#{organization})")

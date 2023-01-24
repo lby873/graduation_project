@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.graduate_design.springboot.mapper.UserMapper">
 
-<!--update标签里面是@update("update user set username=#{username} phone=#{phone}…… where id=#{id}")的内容-->
+<!--update标签里面是@update("update user set username=#{username} phone=#{phone}…… where userID=#{userID}")的内容-->
     <update id="update">
         update user
         <set>

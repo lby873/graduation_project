@@ -26,9 +26,14 @@ public class ActivityController {
         return activityService.save(activity);
     }
 
-    @DeleteMapping("/{id}")
-    public Boolean delete(@PathVariable Integer id){
-        return activityService.deleteById(id);
+    @PostMapping("/ending/{activityID}")
+    public Boolean ending(@PathVariable Integer activityID){
+        return activityService.ending(activityID);
+    }
+
+    @DeleteMapping("/{activityID}")
+    public Boolean delete(@PathVariable Integer activityID){
+        return activityService.deleteById(activityID);
     }
 
     @GetMapping("/page")
@@ -40,11 +45,11 @@ public class ActivityController {
         return activityService.findPage(pageNum,pageSize,name,organizer,address);
     }
 
-    @GetMapping("/orgPage")
-    public Map<String, Object> findOrgPage( @RequestParam Integer pageNum,
-                                            @RequestParam Integer pageSize,
-                                            @RequestParam String organizer) {
-        return activityService.findOrgPage(pageNum,pageSize,organizer);
-    }
+//    @GetMapping("/orgPage")
+//    public Map<String, Object> findOrgPage( @RequestParam Integer pageNum,
+//                                            @RequestParam Integer pageSize,
+//                                            @RequestParam String organizer) {
+//        return activityService.findOrgPage(pageNum,pageSize,organizer);
+//    }
 
 }

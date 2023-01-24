@@ -4,7 +4,6 @@
       <template>
         <el-input style="width: 200px;" placeholder="请输入活动名称" suffix-icon="el-icon-search" v-model="activityName"></el-input>
         <el-input style="width: 200px;margin-left: 20px;" placeholder="请输入地点" suffix-icon="el-icon-search" v-model="address"></el-input>
-        <el-input style="width: 200px;margin-left: 20px;" placeholder="请输入用户状态" suffix-icon="el-icon-search" v-model="Status"></el-input>
       </template>
       <el-button style="margin-left: 20px;" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
@@ -60,7 +59,6 @@
         activityName: '',
         organizer: '',
         address:'',
-        status:'',
         signDTO:{       // 用于取消参赛资格
           activityID: '',
           userID: '',
@@ -80,8 +78,7 @@
             pageSize: this.pageSize,
             activityName: this.activityName,
             organizer: this.organizer,
-            address: this.address,
-            status: this.status,
+            address: this.address
           }
         }).then(res => {
           this.tableData = res.data

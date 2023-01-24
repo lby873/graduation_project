@@ -22,7 +22,7 @@
     </div>
 
     <div style="margin: 10px 0">
-      <el-button type="primary" @click="handleAdd">新增用户 <i class="el-icon-circle-plus-outline"></i></el-button>
+      <el-button type="primary" @click="handleAdd"> 新增用户 <i class="el-icon-circle-plus-outline"></i></el-button>
     </div>
 <!--    用户数据表-->
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
@@ -35,7 +35,6 @@
       <el-table-column label="操作"  width="200" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">修改<i class="el-icon-edit"></i></el-button>
-          <!--                scope.row.userID 获取对应记录的id-->
           <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
                          icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row.userID)">
             <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>

@@ -17,5 +17,5 @@ public class Activity {
     private String organizer;
     private String address;
     private String detail;
-
+    private String endStatus;
 }

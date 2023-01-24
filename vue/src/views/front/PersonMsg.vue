@@ -7,7 +7,7 @@
         <span style="font-size: 24px;">个人信息</span>
       </template>
       <template slot="extra" >
-        <el-button type="info" size="medium" @click="memberDialogVisible = true"
+        <el-button type="primary" size="medium" @click="memberDialogVisible = true"
                    style="font-size: 14px;" v-show="memberBtnVisible">
           查看社团成员
         </el-button>
@@ -15,48 +15,34 @@
       </template>
 
       <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-cpu"></i> 用户ID
-        </template>
+        <template slot="label"><i class="el-icon-cpu"></i> 用户ID</template>
         {{ userLogin.userID }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-user"></i> 用户名
-        </template>
+        <template slot="label"><i class="el-icon-user"></i> 用户名</template>
         {{ userLogin.username }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-user-solid"></i> 用户昵称
-        </template>
+        <template slot="label"><i class="el-icon-user-solid"></i> 用户昵称</template>
         {{ userLogin.nickname }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-mobile-phone"></i> 手机号
-        </template>
+        <template slot="label"><i class="el-icon-mobile-phone"></i> 手机号</template>
         {{ userLogin.phone }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-location-outline"></i> 用户身份
-        </template>
+        <template slot="label"><i class="el-icon-location-outline"></i> 用户身份</template>
         {{ userLogin.identity }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-edit"></i> 用户密码
-        </template>
-        <el-button size="mini" @click="pwDialogVisible = true"><b style="font-size: 14px;">修改密码</b></el-button>
+        <template slot="label"><i class="el-icon-edit"></i> 用户密码</template>
+        <el-button size="mini" type="primary" @click="pwDialogVisible = true" style="font-size: 14px;">修改密码</el-button>
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-school"></i> 所在社团组织
-        </template>
-        <el-tag size="medium"><b style="font-size: 16px; ">{{ userLogin.organization }}</b></el-tag>
+        <template slot="label"><i class="el-icon-school"></i> 所在社团组织</template>
+        <el-tag size="medium"><b style="font-size: 16px;">{{ userLogin.organization }}</b></el-tag>
+        <el-button type="primary" style="margin-left: 10px;" v-show="sumBtnVisible" @click="orgDialogVisible=true">简介</el-button>
       </el-descriptions-item>
-
 
 
     </el-descriptions>
@@ -118,7 +104,7 @@
     </el-dialog>
 
 <!--    社团成员列表-->
-    <el-dialog title="社团成员" :visible.sync="memberDialogVisible" width="65%" center>
+    <el-dialog title="社团成员信息" :visible.sync="memberDialogVisible" width="65%" center>
       <el-table :data="memberTableData" border stripe header-cell-class-name="headerBg">
         <el-table-column prop="username" label="用户名" ></el-table-column>
         <el-table-column prop="nickname" label="昵称"></el-table-column>
@@ -128,21 +114,82 @@
       </el-table>
     </el-dialog>
 
+<!--    社团简介表-->
+    <el-dialog title="社团信息" :visible.sync="orgDialogVisible" width="65%" center>
+      <el-table :data="orgTableData" border stripe header-cell-class-name="headerBg">
+        <el-table-column prop="orgID" label="ID" width="60" align="center"></el-table-column>
+        <el-table-column prop="orgName" label="名称" width="100" align="center"></el-table-column>
+        <el-table-column prop="orgSummary" label="简介"></el-table-column>
+        <el-table-column prop="orgCreatedDate" label="创建时间" width="100" align="center"></el-table-column>
+        <el-table-column prop="orgAdminID" label="管理员ID" width="100" align="center"></el-table-column>
+        <el-table-column prop="orgAdminName" label="管理员用户名" width="100" align="center"></el-table-column>
+        <el-table-column label="操作" width="100" align="center">
+          <template slot-scope="scope">
+            <el-button type="success" @click="orgFormVisible = true" >修改<i class="el-icon-edit"></i></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+<!--    修改社团信息表单-->
+    <el-dialog title="修改社团信息" :visible.sync="orgFormVisible" width="30%" center>
+      <el-form :model="orgForm" :rules="rulesOrg" ref="orgForm" label-width="auto" size="small">
+        <el-form-item label="社团创建时间" prop="orgCreatedDate">
+          <el-date-picker v-model="orgForm.orgCreatedDate" type="date" placeholder="选择日期" style="width: 100%"
+                          :picker-options="pickerOptions" value-format="yyyy-MM-dd">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="社团名称" prop="orgName">
+          <el-input v-model="orgForm.orgName" placeholder="请输入社团名称" ></el-input>
+        </el-form-item>
+        <el-form-item label="社团概要" prop="orgSummary">
+          <el-input v-model="orgForm.orgSummary" type="textarea" :autosize="{minRows:2, maxRows:4}" placeholder="请输入社团概要"></el-input>
+        </el-form-item>
+        <el-form-item label="社团管理员ID" prop="orgAdminID">
+          <el-input v-model="orgForm.orgAdminID" placeholder="请输入社团管理员ID"></el-input>
+        </el-form-item>
+        <el-form-item label="社团管理员用户名" prop="orgAdminName">
+          <el-input v-model="orgForm.orgAdminName"  placeholder="请输入社团管理员用户名"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="cancelOrgForm" style="width: 47%">取 消</el-button>
+        <el-button size="medium" type="primary" @click="saveOrgForm" style="width: 47%">确 定</el-button>
+      </div>
+    </el-dialog>
+
+
   </div>
 </template>
 
 <script>
   export default {
-    name: "Person",
+    name: "PersonMsg",
     data(){
+      const checkChinese = (rule, value, callback) => {
+        if (/^[0-9]*$/.test(value) == true) {       // 如果全是数字就报错
+          callback(new Error("请输入中文或字母或数字的组合"));
+        } else {          //校验通过
+          callback();
+        }
+      };
       return {
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
-        memberTableData: {},
-        memberBtnVisible: true,      // 社团成员按钮是否可见
-        memberDialogVisible: false,   // 社团成员框是否可见
-        dialogVisible: false,      // 个人信息提交确认框是否可见
-        drawerVisible: false,      // 抽屉是否可见
-        pwDialogVisible: false,    // 密码修改对话框是否可见
+        memberTableData: [],
+        orgTableData: {},
+        sumBtnVisible: false,       // 简介按钮
+        orgDialogVisible:false,     // 简介框
+        memberBtnVisible: true,      // 社团成员按钮
+        memberDialogVisible: false,   // 社团成员框
+        dialogVisible: false,      // 个人信息提交确认框
+        drawerVisible: false,      // 抽屉
+        pwDialogVisible: false,    // 密码修改对话框
+        orgFormVisible: false,     // 修改社团信息框
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
+        },
+        orgForm: {},
         userPwd:{         // 实现旧密码验证，新密码提交修改
           userID: '',
           username: '',
@@ -219,7 +266,24 @@
               trigger: "blur"
             }
           ],
-        }
+        },
+        // 修改社团信息规则
+        rulesOrg: {
+          orgCreatedDate: [ {required: true, message: '请选择日期', trigger: 'blur'} ],
+          orgName: [
+            {required: true,  message: '请输入社团名称', trigger: 'blur'},
+            {validator: checkChinese, trigger: "blur"}
+          ],
+          orgSummary: [
+            {required: true, message: '请输入社团概要', trigger: 'blur'},
+            {validator: checkChinese, trigger: "blur"}
+          ],
+          orgAdminID: [ {required: true, message: '请输入社团管理员ID', trigger: 'blur'} ],
+          orgAdminName: [
+            {required: true, message: '请输入社团管理员用户名', trigger: 'blur'},
+            {validator: checkChinese, trigger: "blur"}
+          ],
+        },
 
       }
     },
@@ -232,11 +296,14 @@
         this.userPwd.userID = this.userLogin.userID
         this.userPwd.username = this.userLogin.username
 
-        if (this.userLogin.identity === "普通用户"){
+        if (this.userLogin.identity === "普通用户"){    // 判断用户身份，两个按钮是否可见
           this.memberBtnVisible = false;
+          this.sumBtnVisible = false;
         } else {
           this.memberBtnVisible = true;
+          this.sumBtnVisible = true;
         }
+
         // 获取成员列表
         this.request.get("/user/findMember",{
           params: {
@@ -244,6 +311,17 @@
           }
         }).then(res => {
           this.memberTableData = res.data
+        })
+
+        // 获取社团信息
+        this.request.get("/org/findOrgMsg",{
+          params: {
+            orgName: this.userLogin.organization
+          }
+        }).then(res => {
+          this.orgTableData = res.data    // 把社团信息放到社团简介表
+          this.orgForm = res.data[0]      // 把社团信息放进社团信息修改框
+          console.log(this.orgForm)
         })
       },
 
@@ -295,7 +373,25 @@
       cancelPwForm(){
         this.pwDialogVisible = false
         this.pwForm={}
-      }
+      },
+
+      cancelOrgForm(){
+        this.orgForm = {}
+        this.load()
+        this.orgFormVisible = false
+      },
+      saveOrgForm(){    // 提交修改社团信息表单
+        this.$refs['orgForm'].validate((valid) => {
+          if (valid){
+            this.request.post("/org/save",this.form).then(res =>{
+              if (res){
+                this.$message.success("修改成功")
+                this.orgFormVisible = false
+              }
+            })
+          }
+        });
+      },
 
     }
   }

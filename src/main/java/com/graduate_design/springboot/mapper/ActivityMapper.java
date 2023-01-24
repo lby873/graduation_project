@@ -11,8 +11,9 @@ public interface ActivityMapper {
     @Insert("INSERT into activity(time,name,organizer,address,detail) " +
             "VALUES (#{time},#{name},#{organizer},#{address},#{detail})")
     Boolean insert(Activity activity);
-
-    Boolean update(Activity activity);      //在Activity.xml具体实现
+    @Update("UPDATE activity SET time=#{time},name=#{name},organizer=#{organizer},address=#{address}," +
+            "detail=#{detail} WHERE activityID=#{activityID}")
+    Boolean update(Activity activity);
 
     @Delete("DELETE FROM activity WHERE activityID = #{activityID}")
     Boolean deleteById(Integer activityID);
@@ -20,14 +21,16 @@ public interface ActivityMapper {
     @Select("SELECT * FROM activity WHERE name LIKE concat('%', #{name}, '%') AND address LIKE concat('%',#{address},'%')  " +
             "AND organizer LIKE concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
     List<Activity> selectPage(Integer pageNum, Integer pageSize, String name, String organizer, String address);
-
     @Select("SELECT count(*) FROM activity WHERE name LIKE concat('%', #{name}, '%') " +
             "AND address LIKE concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%')")
     Integer selectTotal(String name, String organizer, String address);
 
-    @Select("SELECT * FROM activity WHERE organizer LIKE #{organizer} limit #{pageNum}, #{pageSize}")
-    List<Activity> selectOrgPage(Integer pageNum, Integer pageSize, String organizer);
+//    @Select("SELECT * FROM activity WHERE organizer LIKE #{organizer} limit #{pageNum}, #{pageSize}")
+//    List<Activity> selectOrgPage(Integer pageNum, Integer pageSize, String organizer);
+//    @Select("SELECT count(*) FROM activity WHERE organizer LIKE #{organizer}")
+//    Integer selectOrgTotal(String organizer);
 
-    @Select("SELECT count(*) FROM activity WHERE organizer LIKE #{organizer}")
-    Integer selectOrgTotal(String organizer);
+    @Update("UPDATE activity,sign SET activity.endStatus = '活动已结束',sign.STATUS = '已参加' " +
+            "WHERE activity.activityID = #{activityID} AND sign.activityID =#{activityID}")
+    Boolean ending(Integer activityID);
 }

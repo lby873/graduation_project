@@ -19,7 +19,7 @@ public class UserService {
         Integer userID = userDTO.getUserID();
         String name = userDTO.getUsername();
         User user = userMapper.checkUsername(name);
-        if (userID == null) {     // user没有id，则表示是新增，否则为更新
+        if (userID == null) {                      // user没有id，则表示是新增，否则为更新
             return userMapper.insert(userDTO);
         } else if(user == null || user.getUserID() == userID){    // 修改后的用户名不重复，或没有修改
             return userMapper.update(userDTO);

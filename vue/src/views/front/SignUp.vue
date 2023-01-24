@@ -104,7 +104,6 @@
           if (res){
             this.$message.success("取消报名成功")
             this.load()
-            window.location.reload()      // 刷新页面
           }else{
             this.$message.error("取消报名失败")
           }

@@ -33,8 +33,9 @@ public class SignController {
                                         @RequestParam Integer userID,
                                         @RequestParam String activityName,
                                         @RequestParam String organizer,
-                                        @RequestParam String address) {
-        return signService.findActivityPage(pageNum,pageSize,userID,activityName,organizer,address);
+                                        @RequestParam String address,
+                                        @RequestParam String endStatus) {
+        return signService.findActivityPage(pageNum,pageSize,userID,activityName,organizer,address,endStatus);
     }
 
     @GetMapping("/page")        // 已报名、已参与列表
@@ -53,9 +54,8 @@ public class SignController {
                                         @RequestParam Integer pageSize,
                                         @RequestParam String activityName,
                                         @RequestParam String organizer,
-                                        @RequestParam String address,
-                                        @RequestParam String  status) {
-        return signService.findAllPage(pageNum,pageSize,activityName,organizer,address,status);
+                                        @RequestParam String address) {
+        return signService.findAllPage(pageNum,pageSize,activityName,organizer,address);
     }
 
 }

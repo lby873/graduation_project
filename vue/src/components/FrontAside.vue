@@ -33,6 +33,10 @@
         <i class="el-icon-setting"></i>
         <span slot="title"><b style="font-size: 18px;"> 已参加活动</b></span>
       </el-menu-item>
+      <el-menu-item index="/end" v-show="userVisible">
+        <i class="el-icon-folder-checked"></i>
+        <span slot="title"><b style="font-size: 18px;"> 已结束活动</b></span>
+      </el-menu-item>
       <el-menu-item index="/person" >
         <i class="el-icon-s-custom"></i>
         <span slot="title"><b style="font-size: 18px;"> 个人信息</b></span>

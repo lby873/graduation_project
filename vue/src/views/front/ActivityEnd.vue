@@ -17,11 +17,7 @@
       <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
       <el-table-column prop="address" label="活动地址" width="100" align="center"></el-table-column>
       <el-table-column prop="detail" label="活动详情"></el-table-column>
-      <el-table-column label="操作"  width="150" align="center">
-        <template slot-scope="scope">
-          <el-button type="success" @click="sign(scope.row)">报名<i class="el-icon-edit"></i></el-button>
-        </template>
-      </el-table-column>
+      <el-table-column prop="endStatus" label="活动状态" width="100" align="center"></el-table-column>
     </el-table>
 
     <!-- 分页行 -->
@@ -42,7 +38,7 @@
 
 <script>
   export default {
-    name: "Home",
+    name: "ActivityEnd",
     data(){
       return {
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
@@ -53,18 +49,7 @@
         activityName: '',
         organizer: '',
         address: '',
-        endStatus: '活动进行中',
-        signDTO:{
-          activityID: '',
-          time:'',
-          name:'',
-          organizer:'',
-          address:'',
-          detail:'',
-          userID: '',
-          userNickname:'',
-          code:'0',       // 0报名、1取消报名
-        },
+        endStatus: '活动已结束',
       }
     },
     created() {   // 请求分页查询数据
@@ -102,24 +87,7 @@
         this.address = ""
         this.load()
       },
-      sign(row){
-        this.signDTO.activityID = row.activityID;
-        this.signDTO.time = row.time;
-        this.signDTO.name = row.name;
-        this.signDTO.organizer = row.organizer;
-        this.signDTO.address = row.address;
-        this.signDTO.detail = row.detail;
-        this.signDTO.userID = this.userLogin.userID;
-        this.signDTO.userNickname = this.userLogin.nickname;
-        this.request.post("/sign/save",this.signDTO).then(res =>{
-          if (res){
-            this.$message.success("报名成功")
-            this.load()
-          }else{
-            this.$message.error("报名失败")
-          }
-        })
-      },
+
     }
   }
 </script>

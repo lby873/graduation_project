@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div style="margin: 10px 0">
+      <template>
+        <el-input style="width: 200px;" placeholder="请输入活动名称" suffix-icon="el-icon-search" v-model="name"></el-input>
+        <el-input style="width: 200px;margin-left: 20px;" placeholder="请输入地点" suffix-icon="el-icon-search" v-model="address"></el-input>
+      </template>
+      <el-button style="margin-left: 20px;" type="primary" @click="load">搜索</el-button>
+      <el-button type="warning" @click="reset">重置</el-button>
+    </div>
     <div style="margin-bottom: 20px">
       <el-button type="primary" @click="dialogFormVisible = true"> 新增活动 <i class="el-icon-circle-plus-outline"></i></el-button>
     </div>
@@ -10,13 +18,19 @@
       <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
       <el-table-column prop="address" label="活动地址" width="100" align="center"></el-table-column>
       <el-table-column prop="detail" label="活动详情"></el-table-column>
-      <el-table-column label="操作"  width="200" align="center">
+      <el-table-column prop="endStatus" label="活动状态" width="100" align="center"></el-table-column>
+      <el-table-column label="操作"  width="250" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="alter(scope.row)">修改<i class="el-icon-edit"></i></el-button>
+          <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info"
+                         icon-color="red" title="您确定结束该活动吗？" @confirm="ending(scope.row.activityID)">
+            <el-button type="warning" slot="reference">结束活动</el-button>
+          </el-popconfirm>
           <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
-                         icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row.activityID)">
+                         icon="el-icon-info" icon-color="red" title="您确定删除该活动吗？" @confirm="del(scope.row.activityID)">
             <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
           </el-popconfirm>
+
         </template>
       </el-table-column>
     </el-table>
@@ -81,6 +95,8 @@ export default {
       total: 0,
       pageNum: 1,
       pageSize: 3,
+      name:'',
+      address:'',
       dialogFormVisible: false,   // 活动表单是否可见
       form: {},
       rules: {
@@ -105,14 +121,16 @@ export default {
   },
   methods:{
     load(){
-      this.form.organizer = this.userLogin.organization   // 发布活动主办方默认值
-      this.organizer = this.userLogin.organization        // 活动列表按主办方筛选
+      this.form.organizer = this.userLogin.organization   // 发布活动主办方默认为该社团
+      this.organizer = this.userLogin.organization        // 活动列表只查该社团的活动
       // 用axios请求数据
-      this.request.get("/activity/orgPage",{
+      this.request.get("/activity/page",{
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
+          name:this.name,
           organizer: this.organizer,
+          address: this.address
         }
       }).then(res => {
         this.tableData = res.data
@@ -125,6 +143,11 @@ export default {
     },
     handleCurrentChange(pageNum) {
       this.pageNum = pageNum
+      this.load()
+    },
+    reset(){
+      this.name=''
+      this.address=''
       this.load()
     },
 
@@ -155,11 +178,20 @@ export default {
       this.request.delete("/activity/" + id).then(res =>{
         if (res){
           this.$message.success("删除成功")
-          window.location.reload()      // 刷新页面
+          this.load()
         }
       })
     },
-
+    ending(activityID) {
+      this.request.post("/activity/ending/"+activityID).then(res =>{
+        if (res){
+          this.$message.success("修改成功")
+          this.load()
+        } else {
+          this.$message.error("当前活动没有人报名，无法结束活动，请删除")
+        }
+      })
+    },
   }
 }
 </script>
