@@ -4,10 +4,16 @@ import com.graduate_design.springboot.entity.Activity;
 import lombok.Data;
 
 @Data
-public class SignDTO extends Activity {
+public class SignDTO{
     private Integer signID;
+    private Integer activityID;
+    private String activityTime;
+    private String activityName;
+    private String organizer;
+    private String address;
     private Integer userID;
-    private String userNickname;
+    private String nickName;
+    private String status;
     private String code;    // 0报名、1取消报名
 
 }

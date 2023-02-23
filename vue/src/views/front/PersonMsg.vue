@@ -1,14 +1,13 @@
 <template>
   <div>
 <!--    前端对contentStyle和labelStyle报错，未解决    -->
-    <el-descriptions class="margin-top" :column="2" size="large" border contentStyle="text-align:center;"
-                     labelStyle="text-align:center;max-width: 100px;font-weight:bold" >
+    <el-descriptions class="margin-top" :column="1" size="large" border contentStyle="text-align:center;"
+                     labelStyle="text-align:center; max-width:50px; font-weight:bold" >
       <template slot="title" >
         <span style="font-size: 24px;">个人信息</span>
       </template>
       <template slot="extra" >
-        <el-button type="primary" size="medium" @click="memberDialogVisible = true"
-                   style="font-size: 14px;" v-show="memberBtnVisible">
+        <el-button type="primary" size="medium" @click="memberDialogVisible = true" style="font-size: 14px;" v-show="memberBtnVisible">
           查看社团成员
         </el-button>
         <el-button type="primary" size="medium" @click="drawerVisible = true">修改个人信息</el-button>
@@ -47,7 +46,7 @@
 
     </el-descriptions>
 
-<!--    抽屉表单内容-->
+<!--    抽屉个人信息表单-->
     <el-drawer :before-close="handleClose" :visible.sync="drawerVisible" direction="rtl" size="35%">
       <template slot="title" >
         <b style="font-size: 20px;">修改个人信息</b>
@@ -111,6 +110,16 @@
         <el-table-column prop="phone" label="手机号码"></el-table-column>
         <el-table-column prop="identity" label="用户身份"></el-table-column>
         <el-table-column prop="organization" label="所属社团"></el-table-column>
+<!--        <el-table-column label="操作"  width="200" align="center" v-if="alterIdentityVisible">-->
+<!--          &lt;!&ndash;v-if 设置是否可见&ndash;&gt;-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='取消'-->
+<!--                           icon="el-icon-info" icon-color="red" title="您确定将该成员修改为普通用户吗？"-->
+<!--                           @confirm="alterIdentity(scope.row.userID)">-->
+<!--              <el-button type="danger" slot="reference">修改为普通用户<i class="el-icon-remove-outline"></i></el-button>-->
+<!--            </el-popconfirm>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
     </el-dialog>
 
@@ -130,6 +139,7 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
 <!--    修改社团信息表单-->
     <el-dialog title="修改社团信息" :visible.sync="orgFormVisible" width="30%" center>
       <el-form :model="orgForm" :rules="rulesOrg" ref="orgForm" label-width="auto" size="small">
@@ -181,7 +191,7 @@
         memberBtnVisible: true,      // 社团成员按钮
         memberDialogVisible: false,   // 社团成员框
         dialogVisible: false,      // 个人信息提交确认框
-        drawerVisible: false,      // 抽屉
+        drawerVisible: false,      // 个人信息表单
         pwDialogVisible: false,    // 密码修改对话框
         orgFormVisible: false,     // 修改社团信息框
         pickerOptions: {
@@ -304,7 +314,7 @@
           this.sumBtnVisible = true;
         }
 
-        // 获取成员列表
+        // 获取成员信息列表
         this.request.get("/user/findMember",{
           params: {
             organization: this.userLogin.organization,
@@ -314,15 +324,17 @@
         })
 
         // 获取社团信息
-        this.request.get("/org/findOrgMsg",{
-          params: {
-            orgName: this.userLogin.organization
-          }
-        }).then(res => {
-          this.orgTableData = res.data    // 把社团信息放到社团简介表
-          this.orgForm = res.data[0]      // 把社团信息放进社团信息修改框
-          console.log(this.orgForm)
-        })
+        if (this.userLogin.organization !== "无"){  // 避免出现查询结果为 undefined
+          this.request.get("/org/findOrgMsg",{
+            params: {
+              orgName: this.userLogin.organization
+            }
+          }).then(res => {
+            this.orgTableData = res.data    // 把社团信息放到社团简介表
+            this.orgForm = res.data[0]      // 把社团信息放进社团信息修改框
+          })
+        }
+
       },
 
       handleClose() {   // 关闭抽屉
@@ -370,6 +382,7 @@
           }// if(valid)
         });
       },
+
       cancelPwForm(){
         this.pwDialogVisible = false
         this.pwForm={}
@@ -380,6 +393,7 @@
         this.load()
         this.orgFormVisible = false
       },
+
       saveOrgForm(){    // 提交修改社团信息表单
         this.$refs['orgForm'].validate((valid) => {
           if (valid){
@@ -392,6 +406,16 @@
           }
         });
       },
+
+      alterIdentity(userID){
+        this.request.post("/user/alterIdentity/" + userID).then(res => {
+          if (res) {
+            this.$message.success("修改成功")
+            this.load()
+            // window.location.reload()      // 刷新页面
+          }
+        })
+      }
 
     }
   }

@@ -13,5 +13,4 @@ public class Organization {
     private String orgSummary;
     private String orgCreatedDate;
     private Integer orgAdminID;
-    private String orgAdminName;
 }

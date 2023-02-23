@@ -10,7 +10,6 @@
       <el-table-column prop="orgCreatedDate" label="社团创建时间" width="100" align="center"></el-table-column>
       <el-table-column prop="orgSummary" label="社团概要"></el-table-column>
       <el-table-column prop="orgAdminID" label="社团管理员ID" width="100" align="center"></el-table-column>
-      <el-table-column prop="orgAdminName" label="社团管理员用户名" width="150" align="center"></el-table-column>
       <el-table-column label="操作"  width="200" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="alter(scope.row)">修改<i class="el-icon-edit"></i></el-button>
@@ -23,7 +22,7 @@
     </el-table>
 
     <!--    社团增加、修改，同个表单-->
-    <el-dialog title="新增社团" :visible.sync="dialogFormVisible" width="30%" center>
+    <el-dialog title="社团信息" :visible.sync="dialogFormVisible" width="30%" center>
       <el-form :model="form" :rules="rules" ref="form" label-width="auto" size="small">
         <el-form-item label="社团创建时间" prop="orgCreatedDate">
           <el-date-picker v-model="form.orgCreatedDate" type="date" placeholder="选择日期" style="width: 100%"
@@ -38,9 +37,6 @@
         </el-form-item>
         <el-form-item label="社团管理员ID" prop="orgAdminID">
           <el-input v-model="form.orgAdminID" placeholder="请输入社团管理员ID"></el-input>
-        </el-form-item>
-        <el-form-item label="社团管理员用户名" prop="orgAdminName">
-          <el-input v-model="form.orgAdminName"  placeholder="请输入社团管理员用户名"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -81,6 +77,7 @@ export default {
       pageNum: 1,
       pageSize: 5,
       dialogFormVisible: false,
+      oldOrgAdminID: '',    // 修改社团管理员时，保存原来的社团管理员ID
       form: {},
       rules: {
         orgCreatedDate: [ {required: true, message: '请选择日期', trigger: 'blur'} ],
@@ -133,6 +130,7 @@ export default {
     alter(row){
       this.dialogFormVisible = true
       this.form = row
+      this.oldOrgAdminID = row.orgAdminID
     },
     cancelForm(){
       this.form = {}
@@ -143,10 +141,20 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid){
           this.request.post("/org/save",this.form).then(res =>{
-            if (res){
+            if (res){                                           // 修改社团信息成功
+              if (this.oldOrgAdminID != this.form.orgAdminID){ // 修改社团管理员为另一人
+                this.request.get("/user/alterAdmin",{
+                  params:{
+                    oldOrgAdminID: this.oldOrgAdminID,
+                    newOrgAdminID: this.form.orgAdminID,
+                    orgName: this.form.orgName
+                  }
+                })
+              }
               this.$message.success("修改成功")
               this.dialogFormVisible = false
-              window.location.reload()      // 刷新页面
+              this.load()
+              // window.location.reload()      // 刷新页面
             }
           })
         }

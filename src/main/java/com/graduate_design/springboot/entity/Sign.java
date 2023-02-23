@@ -12,7 +12,6 @@ public class Sign {
     private String address;
     private String detail;
     private Integer userID;
-    private String userNickName;
     private String status;
 
 }

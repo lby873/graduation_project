@@ -106,15 +106,21 @@
         this.request.get("/sign/cancelQualification",{params: { signID: signID }}).then(res => {
           if (res){
             this.$message.success("修改成功")
-            window.location.reload()      // 刷新页面
+            this.load()
+            // window.location.reload()      // 刷新页面
           }
         })
       },
       resetQualification(signID){
-        this.request.get("/sign/resetQualification",{params: { signID: signID }}).then(res => {
+        this.request.get("/sign/resetQualification",{
+          params: {
+            signID: signID
+          }
+        }).then(res => {
           if (res){
             this.$message.success("修改成功")
-            window.location.reload()      // 刷新页面
+            this.load()
+            // window.location.reload()      // 刷新页面
           }
         })
       },

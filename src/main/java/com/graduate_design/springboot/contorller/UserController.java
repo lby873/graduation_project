@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@RestController             // @Controller + @ResponseBody
 @RequestMapping("/user")
 public class UserController {
 
@@ -40,19 +40,38 @@ public class UserController {
     public List<User> findAll() {
         return userService.findAll();
     }
+
+    // 查询组织成员
     @GetMapping("/findMember")
     public Map<String, Object> findMember(@RequestParam String organization) {
         return userService.findMember(organization);
     }
+
+    // 查询组织列表
     @GetMapping("/org")
     public List<User> findOrg(){
         return userService.findOrg();
     }
+
+    // 查询身份列表
     @GetMapping("/identity")
     public List<User> findIdentity(){
         return userService.findIdentity();
     }
 
+    // 修改用户身份
+    @PostMapping("/alterIdentity/{userID}")
+    public Boolean alterIdentity(@PathVariable Integer userID){
+        return userService.alterIdentity(userID);
+    }
+
+    // 修改社团管理员
+    @GetMapping("/alterAdmin")
+    public Boolean alterAdmin(@RequestParam Integer oldOrgAdminID,
+                              @RequestParam String newOrgAdminID,
+                              @RequestParam String orgName){
+        return userService.alterAdmin(oldOrgAdminID, Integer.valueOf(newOrgAdminID),orgName);
+    }
 
     // 分页查询
     // 接口路径：/user/page?pageNum=1&pageSize=10

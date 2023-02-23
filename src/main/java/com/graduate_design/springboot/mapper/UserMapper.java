@@ -2,10 +2,8 @@ package com.graduate_design.springboot.mapper;
 
 import com.graduate_design.springboot.contorller.dto.UserDTO;
 import com.graduate_design.springboot.entity.User;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Mapper
@@ -44,4 +42,13 @@ public interface UserMapper {
 
     @Select("SELECT * FROM user WHERE organization LIKE #{organization}")
     List<User> findMember(String organization);
+
+    @Update("UPDATE user SET identity='普通用户', organization='无' WHERE userID=#{userID}")
+    Boolean alterIdentity(Integer userID);
+
+    @Update("update user set identity='普通用户', organization='无' where userID=#{oldOrgAdminID}")
+    Boolean alterToUser(Integer oldOrgAdminID);
+
+    @Update("update user set identity='社团管理员', organization=#{orgName} where userID=#{newOrgAdminID}")
+    Boolean alterToAdmin( Integer newOrgAdminID, String orgName);
 }

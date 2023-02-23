@@ -23,7 +23,7 @@
         <template slot-scope="scope">
           <el-button type="success" @click="alter(scope.row)">修改<i class="el-icon-edit"></i></el-button>
           <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info"
-                         icon-color="red" title="您确定结束该活动吗？" @confirm="ending(scope.row.activityID)">
+                         icon-color="red" title="您确定结束该活动吗？" @confirm="ending(scope.row)">
             <el-button type="warning" slot="reference">结束活动</el-button>
           </el-popconfirm>
           <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
@@ -163,7 +163,8 @@ export default {
             if (res){
               this.$message.success("修改成功")
               this.dialogFormVisible = false
-              window.location.reload()      // 刷新页面
+              this.load()
+              // window.location.reload()      // 刷新页面
             }
           })
         }
@@ -182,15 +183,19 @@ export default {
         }
       })
     },
-    ending(activityID) {
-      this.request.post("/activity/ending/"+activityID).then(res =>{
-        if (res){
-          this.$message.success("修改成功")
-          this.load()
-        } else {
-          this.$message.error("当前活动没有人报名，无法结束活动，请删除")
-        }
-      })
+    ending(row) {
+      if (row.endStatus == "活动已结束"){
+        this.$message.error("操作失败，活动已是结束状态")
+      } else {
+        this.request.post("/activity/ending/"+activityID).then(res =>{
+          if (res){
+            this.$message.success("修改成功")
+            this.load()
+          } else {
+            this.$message.error("当前活动没有人报名，无法结束活动，您可以选择删除活动")
+          }
+        })
+      }
     },
   }
 }

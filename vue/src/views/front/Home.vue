@@ -62,7 +62,6 @@
           address:'',
           detail:'',
           userID: '',
-          userNickname:'',
           code:'0',       // 0报名、1取消报名
         },
       }
@@ -110,7 +109,6 @@
         this.signDTO.address = row.address;
         this.signDTO.detail = row.detail;
         this.signDTO.userID = this.userLogin.userID;
-        this.signDTO.userNickname = this.userLogin.nickname;
         this.request.post("/sign/save",this.signDTO).then(res =>{
           if (res){
             this.$message.success("报名成功")

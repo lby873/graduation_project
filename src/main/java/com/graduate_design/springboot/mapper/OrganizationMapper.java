@@ -13,11 +13,11 @@ public interface OrganizationMapper {
     Integer selectTotal();
 
     // 新增，修改社团信息
-    @Insert("INSERT into organization(orgName,orgSummary,orgCreatedDate,orgAdminID,orgAdminName) " +
-            "VALUES (#{orgName},#{orgSummary},#{orgCreatedDate},#{orgAdminID},#{orgAdminName})")
+    @Insert("INSERT into organization(orgName,orgSummary,orgCreatedDate,orgAdminID) " +
+            "VALUES (#{orgName},#{orgSummary},#{orgCreatedDate},#{orgAdminID})")
     Boolean insert(Organization organization);
     @Update("UPDATE organization SET orgName=#{orgName},orgSummary=#{orgSummary},orgCreatedDate=#{orgCreatedDate}," +
-            "orgAdminID=#{orgAdminID},orgAdminName=#{orgAdminName} WHERE orgID=#{orgID}")
+            "orgAdminID=#{orgAdminID} WHERE orgID=#{orgID}")
     Boolean update(Organization organization);
 
     // 删除社团信息
@@ -28,6 +28,5 @@ public interface OrganizationMapper {
     @Select("SELECT * FROM organization WHERE orgName = #{orgName}")
     List<Organization> findOrgMsg(String orgName);
 
-    // 修改社团管理员
 
 }

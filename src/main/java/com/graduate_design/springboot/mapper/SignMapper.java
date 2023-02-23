@@ -41,9 +41,10 @@ public interface SignMapper {
     Integer selectTotalPart(Integer userID, String activityName, String organizer, String address);
 
     // 所有活动报名参与记录列表
-    @Select("SELECT * FROM sign WHERE activityName LIKE concat('%', #{activityName}, '%') AND address LIKE " +
+    @Select("SELECT s.signID,s.activityID,s.activityTime,s.activityName,s.organizer,s.address,s.userID,u.nickname,s.status FROM sign s,user u " +
+            "WHERE s.userID=u.userID AND activityName LIKE concat('%', #{activityName}, '%') AND address LIKE " +
             "concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
-    List<Sign> findAll(Integer pageNum, Integer pageSize, String activityName, String organizer, String address);
+    List<SignDTO> findAll(Integer pageNum, Integer pageSize, String activityName, String organizer, String address);
     @Select("SELECT count(*) FROM sign WHERE activityName LIKE concat('%', #{activityName}, '%') AND address LIKE " +
             "concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%')")
     Integer selectTotal(String activityName, String organizer, String address);
@@ -61,8 +62,8 @@ public interface SignMapper {
     @Update("UPDATE sign SET status='已参加' WHERE signID = #{signID}")
     Boolean resetQualification(Integer signID);         // 恢复参赛资格
 
-    @Insert("INSERT INTO sign(activityID,activityTime,activityName,organizer,address,detail,userID,userNickname) " +
-            "VALUES (#{activityID},#{time},#{name},#{organizer},#{address},#{detail},#{userID},#{userNickname})")
+    @Insert("INSERT INTO sign(activityID,activityTime,activityName,organizer,address,detail,userID) " +
+            "VALUES (#{activityID},#{time},#{name},#{organizer},#{address},#{detail},#{userID})")
     Boolean insert(SignDTO signDTO);            // 报名
 
 }

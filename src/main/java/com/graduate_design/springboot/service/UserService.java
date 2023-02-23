@@ -5,12 +5,14 @@ import com.graduate_design.springboot.entity.User;
 import com.graduate_design.springboot.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional(rollbackFor = Exception.class)   // 所有方法都会用到事务
 public class UserService {
     @Autowired
     private UserMapper userMapper;
@@ -79,5 +81,13 @@ public class UserService {
         Map<String, Object> res = new HashMap<>();
         res.put("data", memberList);
         return res;
+    }
+
+    public Boolean alterIdentity(Integer userID) {
+        return userMapper.alterIdentity(userID);
+    }
+
+    public Boolean alterAdmin(Integer oldOrgAdminID, Integer newOrgAdminID,String orgName) {
+        return userMapper.alterToAdmin(newOrgAdminID,orgName) && userMapper.alterToUser(oldOrgAdminID);
     }
 }

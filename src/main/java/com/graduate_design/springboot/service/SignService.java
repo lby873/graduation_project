@@ -61,7 +61,7 @@ public class SignService {
     public Map<String, Object> findAllPage(Integer pageNum, Integer pageSize, String activityName,
                                            String organizer, String address) {
         pageNum = (pageNum - 1) * pageSize;
-        List<Sign> data = signMapper.findAll(pageNum, pageSize, activityName, organizer, address);
+        List<SignDTO> data = signMapper.findAll(pageNum, pageSize, activityName, organizer, address);
         Integer total = signMapper.selectTotal(activityName, organizer, address);
         Map<String, Object> res = new HashMap<>();
         res.put("data", data);

@@ -214,7 +214,7 @@ export default {
         if (res) {
           this.$message.success("删除成功")
           this.load()
-          window.location.reload()      // 刷新页面
+          // window.location.reload()      // 刷新页面
         } else {
           this.$message.error("删除失败")
         }
@@ -250,6 +250,7 @@ export default {
         this.orgRequired = false      // 改为“非必填”
       } else {
         this.orgRequired = true
+        this.form.organization = "学生会"   // 社团组织默认值
         this.orgDisabled = false
       }
     },
