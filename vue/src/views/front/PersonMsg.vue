@@ -302,9 +302,10 @@
     },
     methods:{
       load(){
-        this.form = this.userLogin    // 抽屉的内容
+        this.form = this.userLogin    // 抽屉内容初始化
         this.userPwd.userID = this.userLogin.userID
         this.userPwd.username = this.userLogin.username
+        this.userPwd.identity = this.userLogin.identity
 
         if (this.userLogin.identity === "普通用户"){    // 判断用户身份，两个按钮是否可见
           this.memberBtnVisible = false;
