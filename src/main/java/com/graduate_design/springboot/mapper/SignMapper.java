@@ -41,17 +41,13 @@ public interface SignMapper {
     Integer selectTotalPart(Integer userID, String activityName, String organizer, String address);
 
     // 所有活动报名参与记录列表
-    @Select("SELECT s.signID,s.activityID,s.activityTime,s.activityName,s.organizer,s.address,s.userID,u.nickname,s.status FROM sign s,user u " +
+    @Select("SELECT s.signID,s.activityID,s.activityTime,s.activityName,s.organizer,s.address,s.detail,u.userID,u.nickname,s.status FROM sign s,user u " +
             "WHERE s.userID=u.userID AND activityName LIKE concat('%', #{activityName}, '%') AND address LIKE " +
             "concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
     List<SignDTO> findAll(Integer pageNum, Integer pageSize, String activityName, String organizer, String address);
     @Select("SELECT count(*) FROM sign WHERE activityName LIKE concat('%', #{activityName}, '%') AND address LIKE " +
             "concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%')")
     Integer selectTotal(String activityName, String organizer, String address);
-
-
-    @Delete("DELETE FROM sign WHERE userID = #{userID}")
-    Boolean deleteUserID(Integer userID);                     // 若用户被删除，则相关活动要被删除
 
     @Delete("DELETE FROM sign WHERE userID = #{userID} AND activityID = #{activityID}")
     Boolean cancelSign(Integer userID, Integer activityID);                     // 取消报名
@@ -63,7 +59,7 @@ public interface SignMapper {
     Boolean resetQualification(Integer signID);         // 恢复参赛资格
 
     @Insert("INSERT INTO sign(activityID,activityTime,activityName,organizer,address,detail,userID) " +
-            "VALUES (#{activityID},#{time},#{name},#{organizer},#{address},#{detail},#{userID})")
+            "VALUES (#{activityID},#{activityTime},#{activityName},#{organizer},#{address},#{detail},#{userID})")
     Boolean insert(SignDTO signDTO);            // 报名
 
 }

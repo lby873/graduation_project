@@ -29,7 +29,7 @@ public class UserController {
         return userService.save(userDTO);
     }
 
-    // 删除
+    // 删除用户
     @DeleteMapping("/{activityID}")     //删除
     public Boolean delete(@PathVariable Integer activityID) {
         return userService.deleteById(activityID);
@@ -43,8 +43,8 @@ public class UserController {
 
     // 查询组织成员
     @GetMapping("/findMember")
-    public Map<String, Object> findMember(@RequestParam String organization) {
-        return userService.findMember(organization);
+    public Map<String, Object> findMember(@RequestParam String organization,@RequestParam Integer orgMemberCode) {
+        return userService.findMember(organization,orgMemberCode);
     }
 
     // 查询组织列表
@@ -59,10 +59,16 @@ public class UserController {
         return userService.findIdentity();
     }
 
-    // 修改用户身份
-    @PostMapping("/alterIdentity/{userID}")
-    public Boolean alterIdentity(@PathVariable Integer userID){
-        return userService.alterIdentity(userID);
+    // 修改社团成员身份为普通用户
+    @PostMapping("/alterMemberIdentity/{userID}")
+    public Boolean alterMemberToUser(@PathVariable Integer userID){
+        return userService.alterMemberToUser(userID);
+    }
+
+    // 修改普通用户身份为社团成员
+    @PostMapping("/alterUserToMember/{userID}")
+    public Boolean alterUserToMember(@PathVariable Integer userID,@RequestBody String organization){
+        return userService.alterUserToMember(userID,organization);
     }
 
     // 修改社团管理员

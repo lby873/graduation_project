@@ -11,8 +11,9 @@ public class SignDTO{
     private String activityName;
     private String organizer;
     private String address;
+    private String detail;
     private Integer userID;
-    private String nickName;
+    private String nickname;
     private String status;
     private String code;    // 0报名、1取消报名
 

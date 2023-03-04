@@ -17,6 +17,8 @@ public interface ActivityMapper {
 
     @Delete("DELETE FROM activity WHERE activityID = #{activityID}")
     Boolean deleteById(Integer activityID);
+    @Delete("DELETE FROM sign WHERE activityID = #{activityID}")
+    Boolean deleteSignActivity(Integer activityID);             // 若活动被删除，则报名的相关活动要被删除
 
     @Select("SELECT * FROM activity WHERE name LIKE concat('%', #{name}, '%') AND address LIKE concat('%',#{address},'%')  " +
             "AND organizer LIKE concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")

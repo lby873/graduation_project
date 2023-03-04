@@ -13,8 +13,8 @@
       <el-table-column label="操作"  width="200" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="alter(scope.row)">修改<i class="el-icon-edit"></i></el-button>
-          <el-popconfirm confirm-button-text='确定' cancel-button-text='取消'
-                         icon="el-icon-info" icon-color="red" title="您确定删除该数据吗？" @confirm="del(scope.row.orgID)">
+          <el-popconfirm confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info" icon-color="red"
+                         title="您确定删除该数据吗？" @confirm="del(scope.row.orgID)">
             <el-button style="margin-left: 10px" type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
           </el-popconfirm>
         </template>
@@ -142,7 +142,7 @@ export default {
         if (valid){
           this.request.post("/org/save",this.form).then(res =>{
             if (res){                                           // 修改社团信息成功
-              if (this.oldOrgAdminID != this.form.orgAdminID){ // 修改社团管理员为另一人
+              if (this.oldOrgAdminID != this.form.orgAdminID){  // 修改社团管理员为另一人
                 this.request.get("/user/alterAdmin",{
                   params:{
                     oldOrgAdminID: this.oldOrgAdminID,

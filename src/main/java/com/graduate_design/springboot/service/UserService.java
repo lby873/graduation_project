@@ -39,8 +39,8 @@ public class UserService {
         }
     }
 
-    public Boolean deleteById(Integer id) {     // 删除某个id记录
-        return userMapper.deleteById(id);
+    public Boolean deleteById(Integer id) {     // 删除某个用户id记录
+        return userMapper.deleteUserActivity(id) && userMapper.deleteById(id);
     }
 
     public List<User> findAll() {        // 查询所有
@@ -90,19 +90,28 @@ public class UserService {
         }
     }
 
-    public Map<String, Object> findMember(String organization) {
-        List<User> memberList = userMapper.findMember(organization);
+    public Map<String, Object> findMember(String organization, Integer orgMemberCode) {
+        List<User> memberList;
+        if (orgMemberCode == 1){
+            memberList = userMapper.findAllMember(organization);
+        } else {
+            memberList = userMapper.findMember(organization);
+        }
         Map<String, Object> res = new HashMap<>();
         res.put("data", memberList);
         return res;
     }
 
-    public Boolean alterIdentity(Integer userID) {
-        return userMapper.alterIdentity(userID);
+    public Boolean alterMemberToUser(Integer userID) {
+        return userMapper.alterMemberToUser(userID);
     }
 
     public Boolean alterAdmin(Integer oldOrgAdminID, Integer newOrgAdminID,String orgName) {
-        return userMapper.alterToAdmin(newOrgAdminID,orgName) && userMapper.alterToUser(oldOrgAdminID);
+        return userMapper.alterToAdmin(newOrgAdminID,orgName) && userMapper.alterAdminToUser(oldOrgAdminID);
     }
 
+    public Boolean alterUserToMember(Integer userID,String organization) {
+        organization = organization.replace("\"","");        // 转成不带双引号的字符串
+        return userMapper.alterUserToMember(userID,organization);
+    }
 }

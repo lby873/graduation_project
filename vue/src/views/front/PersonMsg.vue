@@ -7,9 +7,6 @@
         <span style="font-size: 24px;">个人信息</span>
       </template>
       <template slot="extra" >
-        <el-button type="primary" size="medium" @click="memberDialogVisible = true" style="font-size: 14px;" v-show="memberBtnVisible">
-          查看社团成员
-        </el-button>
         <el-button type="primary" size="medium" @click="drawerVisible = true">修改个人信息</el-button>
       </template>
 
@@ -35,14 +32,12 @@
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label"><i class="el-icon-edit"></i> 用户密码</template>
-        <el-button size="mini" type="primary" @click="pwDialogVisible = true" style="font-size: 14px;">修改密码</el-button>
+        <el-button size="mini" type="danger" @click="pwDialogVisible = true" style="font-size: 14px;">修改密码</el-button>
       </el-descriptions-item>
-      <el-descriptions-item>
+      <el-descriptions-item v-if="orgVisible">
         <template slot="label"><i class="el-icon-school"></i> 所在社团组织</template>
-        <el-tag size="medium"><b style="font-size: 16px;">{{ userLogin.organization }}</b></el-tag>
-        <el-button type="primary" style="margin-left: 10px;" v-show="sumBtnVisible" @click="orgDialogVisible=true">简介</el-button>
+        <el-button type="primary" style="text-align: center;font-size: 14px;" @click="orgDialogVisible=true">{{ userLogin.organization }}</el-button>
       </el-descriptions-item>
-
 
     </el-descriptions>
 
@@ -67,6 +62,12 @@
           </el-form-item>
           <el-form-item label="所在社团组织">
             <el-input v-model="form.organization" :disabled="true"></el-input>
+          </el-form-item>
+          <el-form-item label="是否退出所在社团" v-if="quitOrgVisible">
+            <el-radio-group v-model="radioQuit">
+              <el-radio label="1" @change="quitOrg" border> 是 </el-radio>
+              <el-radio label="0" style="margin-left: 5px" @change="quitOrg" border> 否 </el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-form>
       </div>
@@ -102,27 +103,6 @@
       </span>
     </el-dialog>
 
-<!--    社团成员列表-->
-    <el-dialog title="社团成员信息" :visible.sync="memberDialogVisible" width="65%" center>
-      <el-table :data="memberTableData" border stripe header-cell-class-name="headerBg">
-        <el-table-column prop="username" label="用户名" ></el-table-column>
-        <el-table-column prop="nickname" label="昵称"></el-table-column>
-        <el-table-column prop="phone" label="手机号码"></el-table-column>
-        <el-table-column prop="identity" label="用户身份"></el-table-column>
-        <el-table-column prop="organization" label="所属社团"></el-table-column>
-<!--        <el-table-column label="操作"  width="200" align="center" v-if="alterIdentityVisible">-->
-<!--          &lt;!&ndash;v-if 设置是否可见&ndash;&gt;-->
-<!--          <template slot-scope="scope">-->
-<!--            <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='取消'-->
-<!--                           icon="el-icon-info" icon-color="red" title="您确定将该成员修改为普通用户吗？"-->
-<!--                           @confirm="alterIdentity(scope.row.userID)">-->
-<!--              <el-button type="danger" slot="reference">修改为普通用户<i class="el-icon-remove-outline"></i></el-button>-->
-<!--            </el-popconfirm>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-      </el-table>
-    </el-dialog>
-
 <!--    社团简介表-->
     <el-dialog title="社团信息" :visible.sync="orgDialogVisible" width="65%" center>
       <el-table :data="orgTableData" border stripe header-cell-class-name="headerBg">
@@ -131,8 +111,7 @@
         <el-table-column prop="orgSummary" label="简介"></el-table-column>
         <el-table-column prop="orgCreatedDate" label="创建时间" width="100" align="center"></el-table-column>
         <el-table-column prop="orgAdminID" label="管理员ID" width="100" align="center"></el-table-column>
-        <el-table-column prop="orgAdminName" label="管理员用户名" width="100" align="center"></el-table-column>
-        <el-table-column label="操作" width="100" align="center">
+        <el-table-column label="操作" width="100" align="center" v-if="alterOrgDetailVisible">
           <template slot-scope="scope">
             <el-button type="success" @click="orgFormVisible = true" >修改<i class="el-icon-edit"></i></el-button>
           </template>
@@ -151,14 +130,11 @@
         <el-form-item label="社团名称" prop="orgName">
           <el-input v-model="orgForm.orgName" placeholder="请输入社团名称" ></el-input>
         </el-form-item>
-        <el-form-item label="社团概要" prop="orgSummary">
+        <el-form-item label="社团简介" prop="orgSummary">
           <el-input v-model="orgForm.orgSummary" type="textarea" :autosize="{minRows:2, maxRows:4}" placeholder="请输入社团概要"></el-input>
         </el-form-item>
-        <el-form-item label="社团管理员ID" prop="orgAdminID">
-          <el-input v-model="orgForm.orgAdminID" placeholder="请输入社团管理员ID"></el-input>
-        </el-form-item>
-        <el-form-item label="社团管理员用户名" prop="orgAdminName">
-          <el-input v-model="orgForm.orgAdminName"  placeholder="请输入社团管理员用户名"></el-input>
+        <el-form-item label="社团管理员ID">
+          <el-input v-model="orgForm.orgAdminID" :disabled="true"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -166,7 +142,6 @@
         <el-button size="medium" type="primary" @click="saveOrgForm" style="width: 47%">确 定</el-button>
       </div>
     </el-dialog>
-
 
   </div>
 </template>
@@ -186,14 +161,16 @@
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
         memberTableData: [],
         orgTableData: {},
-        sumBtnVisible: false,       // 简介按钮
+        orgVisible: false,          // 个人信息中，社团一行
         orgDialogVisible:false,     // 简介框
-        memberBtnVisible: true,      // 社团成员按钮
-        memberDialogVisible: false,   // 社团成员框
         dialogVisible: false,      // 个人信息提交确认框
         drawerVisible: false,      // 个人信息表单
         pwDialogVisible: false,    // 密码修改对话框
         orgFormVisible: false,     // 修改社团信息框
+        alterOrgDetailVisible: false,    // 修改社团信息按钮
+        quitOrgVisible: false,    // 个人信息表单中，退出社团一行
+        radioQuit: '0',
+        oldOrganization: '',
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() > Date.now();
@@ -288,11 +265,6 @@
             {required: true, message: '请输入社团概要', trigger: 'blur'},
             {validator: checkChinese, trigger: "blur"}
           ],
-          orgAdminID: [ {required: true, message: '请输入社团管理员ID', trigger: 'blur'} ],
-          orgAdminName: [
-            {required: true, message: '请输入社团管理员用户名', trigger: 'blur'},
-            {validator: checkChinese, trigger: "blur"}
-          ],
         },
 
       }
@@ -306,23 +278,17 @@
         this.userPwd.userID = this.userLogin.userID
         this.userPwd.username = this.userLogin.username
         this.userPwd.identity = this.userLogin.identity
+        this.oldOrganization = this.userLogin.organization    // 保存原社团组织
 
-        if (this.userLogin.identity === "普通用户"){    // 判断用户身份，两个按钮是否可见
-          this.memberBtnVisible = false;
-          this.sumBtnVisible = false;
-        } else {
-          this.memberBtnVisible = true;
-          this.sumBtnVisible = true;
+        if (this.userLogin.identity === "普通用户"){    // 判断用户身份
+          this.orgVisible = false;      // 个人信息中，社团一行不可见
+        } else if (this.userLogin.identity === "社团管理员"){
+          this.alterOrgDetailVisible = true;   // 修改社团信息按钮可见
+          this.orgVisible = true;       // 个人信息中，社团一行可见
+        } else{
+          this.orgVisible = true;
+          this.quitOrgVisible = true;
         }
-
-        // 获取成员信息列表
-        this.request.get("/user/findMember",{
-          params: {
-            organization: this.userLogin.organization,
-          }
-        }).then(res => {
-          this.memberTableData = res.data
-        })
 
         // 获取社团信息
         if (this.userLogin.organization !== "无"){  // 避免出现查询结果为 undefined
@@ -340,10 +306,10 @@
 
       handleClose() {   // 关闭抽屉
         this.drawerVisible = false
-        window.location.reload()      // 刷新页面
+        window.location.reload()      // 必须刷新页面
       },
 
-      saveForm(){     // 提交抽屉表单
+      saveForm(){     // 提交抽屉个人信息表单
         this.$refs['user'].validate((valid) => {
           if (valid) {      // 表单校验合法
             this.request.post("/user/save",this.form).then(res =>{
@@ -352,7 +318,7 @@
                 localStorage.setItem("userLogin", JSON.stringify(this.form))  // 重新存储用户信息到浏览器
                 this.drawerVisible = false
                 this.dialogVisible = false
-                this.load()
+                window.location.reload()      // 必须刷新页面
               } else {    // 存在相同用户名
                 this.$message.error("用户名已存在，修改失败")
                 this.dialogVisible = false
@@ -407,17 +373,17 @@
           }
         });
       },
-
-      alterIdentity(userID){
-        this.request.post("/user/alterIdentity/" + userID).then(res => {
-          if (res) {
-            this.$message.success("修改成功")
-            this.load()
-            // window.location.reload()      // 刷新页面
-          }
-        })
+      quitOrg(){     // 更新表单内容
+        if (this.radioQuit == "1"){
+          console.log(this.radioQuit)
+          this.form.identity = "普通用户"
+          this.form.organization = "无"
+        } else {
+          console.log(this.oldOrganization)
+          this.form.identity = "社团成员"
+          this.form.organization = this.oldOrganization
+        }
       }
-
     }
   }
 </script>
@@ -429,8 +395,5 @@
   margin: 50px auto;
   font-size: 15px;
 }
-
-
-
 
 </style>

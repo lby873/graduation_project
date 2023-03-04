@@ -3,7 +3,6 @@ package com.graduate_design.springboot.mapper;
 import com.graduate_design.springboot.contorller.dto.UserDTO;
 import com.graduate_design.springboot.entity.User;
 import org.apache.ibatis.annotations.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Mapper
@@ -26,6 +25,9 @@ public interface UserMapper {
     @Delete("DELETE FROM user WHERE userID = #{id}")
     Boolean deleteById(Integer id);
 
+    @Delete("DELETE FROM sign WHERE userID = #{id}")
+    Boolean deleteUserActivity(Integer id);         // 若用户被删除，则相关活动要被删除
+
     @Select("SELECT * FROM user WHERE (username LIKE concat('%', #{username}, '%') AND nickname LIKE " +
             "concat('%', #{nickname}, '%') AND phone LIKE concat('%', #{phone}, '%') AND identity LIKE " +
             "concat('%', #{identity}, '%')  AND organization LIKE concat('%', #{organization}, '%')) limit #{pageNum}, #{pageSize}")
@@ -42,16 +44,19 @@ public interface UserMapper {
     User loginData(String username, String identity);  // 检查登录信息
 
     @Select("SELECT * FROM user WHERE organization LIKE #{organization}")
-    List<User> findMember(String organization);
+    List<User> findAllMember(String organization);      // 查找所有社团成员，包括管理员
+    @Select("SELECT * FROM user WHERE organization LIKE #{organization} AND identity NOT LIKE '社团管理员'")
+    List<User> findMember(String organization);         // 不包括管理员
 
     @Update("UPDATE user SET identity='普通用户', organization='无' WHERE userID=#{userID}")
-    Boolean alterIdentity(Integer userID);
+    Boolean alterMemberToUser(Integer userID);    // 社团成员修改为普通用户
 
     @Update("update user set identity='普通用户', organization='无' where userID=#{oldOrgAdminID}")
-    Boolean alterToUser(Integer oldOrgAdminID);
+    Boolean alterAdminToUser(Integer oldOrgAdminID);     // 管理员修改为普通用户
 
     @Update("update user set identity='社团管理员', organization=#{orgName} where userID=#{newOrgAdminID}")
-    Boolean alterToAdmin( Integer newOrgAdminID, String orgName);
+    Boolean alterToAdmin( Integer newOrgAdminID, String orgName);   // 修改为新管理员
 
-
+    @Update("UPDATE user SET identity='社团成员', organization=#{organization} WHERE userID=#{userID}")
+    Boolean alterUserToMember(Integer userID,String organization);
 }

@@ -18,7 +18,7 @@
       <el-table-column prop="organizer" label="主办方社团" align="center"></el-table-column>
       <el-table-column prop="address" label="活动地址" align="center"></el-table-column>
       <el-table-column prop="userID" label="用户ID" align="center"></el-table-column>
-      <el-table-column prop="nickName" label="用户昵称" align="center"></el-table-column>
+      <el-table-column prop="nickname" label="用户昵称" align="center"></el-table-column>
       <el-table-column prop="status" label="用户状态" align="center"></el-table-column>
       <el-table-column label="操作" align="center" width="300">
         <template slot-scope="scope">

@@ -56,8 +56,8 @@
         endStatus: '活动进行中',
         signDTO:{
           activityID: '',
-          time:'',
-          name:'',
+          activityTime:'',
+          activityName:'',
           organizer:'',
           address:'',
           detail:'',
@@ -103,8 +103,8 @@
       },
       sign(row){
         this.signDTO.activityID = row.activityID;
-        this.signDTO.time = row.time;
-        this.signDTO.name = row.name;
+        this.signDTO.activityTime = row.time;
+        this.signDTO.activityName = row.name;
         this.signDTO.organizer = row.organizer;
         this.signDTO.address = row.address;
         this.signDTO.detail = row.detail;

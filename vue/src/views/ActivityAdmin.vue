@@ -190,7 +190,8 @@ export default {
       this.request.delete("/activity/" + id).then(res =>{
         if (res){
           this.$message.success("删除成功")
-          window.location.reload()      // 刷新页面
+          this.load()
+          // window.location.reload()      // 刷新页面
         }
       })
     },

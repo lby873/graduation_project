@@ -27,7 +27,7 @@ public class ActivityService {
     }
 
     public Boolean deleteById(Integer activityID) {
-        return activityMapper.deleteById(activityID);
+        return activityMapper.deleteSignActivity(activityID) && activityMapper.deleteById(activityID);
     }
 
     public Map<String, Object> findPage(Integer pageNum, Integer pageSize, String name, String organizer, String address) {

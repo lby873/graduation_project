@@ -10,12 +10,15 @@ import ActivityEnd from "@/views/front/ActivityEnd.vue";
 import PersonMsg from "@/views/front/PersonMsg.vue";
 import AddActivity from "@/views/front/AddActivity.vue";
 import OrgSignPart from "@/views/front/OrgSignPart.vue";
+import JoinOrgApply from "@/views/front/JoinOrgApply.vue";
+import orgMember from "@/views/front/OrgMember.vue";
 
 import UserAdmin from "@/views/UserAdmin.vue";
 import AdminManage from "@/views/AdminManage.vue";
 import ActivityAdmin from "@/views/ActivityAdmin.vue";
 import SignPartAdmin from "@/views/SignPartAdmin.vue";
 import OrganizationAdmin from "@/views/OrganizationAdmin.vue";
+
 
 
 Vue.use(VueRouter)
@@ -33,6 +36,8 @@ const routes = [
             {path: 'end', name:'已结束活动', component: ActivityEnd},
             {path: 'addActivity', name:'发布活动', component: AddActivity},
             {path: 'orgSignPart', name:'报名参与人员', component: OrgSignPart},
+            {path: 'joinOrgApply', name:'加入社团申请', component: JoinOrgApply},
+            {path: 'orgMember', name:'社团成员', component: orgMember},
         ]
     },
     {

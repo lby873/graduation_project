@@ -37,6 +37,14 @@
         <i class="el-icon-folder-checked"></i>
         <span slot="title"><b style="font-size: 18px;"> 已结束活动</b></span>
       </el-menu-item>
+      <el-menu-item index="/orgMember" v-show="memberVisible">
+        <i class="el-icon-user"></i>
+        <span slot="title"><b style="font-size: 18px;"> 社团成员</b></span>
+      </el-menu-item>
+      <el-menu-item index="/joinOrgApply" v-show="joinOrgVisible">
+        <i class="el-icon-add-location"></i>
+        <span slot="title"><b style="font-size: 18px;"> 加入社团申请</b></span>
+      </el-menu-item>
       <el-menu-item index="/person" >
         <i class="el-icon-s-custom"></i>
         <span slot="title"><b style="font-size: 18px;"> 个人信息</b></span>
@@ -55,6 +63,8 @@
         userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
         orgAdminVisible: false,
         userVisible: true,
+        memberVisible: true,  // 社团成员页面（仅普通用户不可见）
+        joinOrgVisible: false // 申请加入社团页面（仅社团成员不可见）
       }
     },
     created() {
@@ -62,9 +72,13 @@
     },
     methods:{
       load(){
-        if (this.userLogin.identity === "社团管理员"){
-          this.orgAdminVisible = true;
-          this.userVisible = false;
+        if (this.userLogin.identity === "普通用户"){
+          this.memberVisible = false
+          this.joinOrgVisible = true
+        }else if (this.userLogin.identity === "社团管理员"){
+          this.orgAdminVisible = true
+          this.userVisible = false
+          this.joinOrgVisible = true
         }
       }
     },
