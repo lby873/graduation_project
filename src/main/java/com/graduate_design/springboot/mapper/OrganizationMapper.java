@@ -1,6 +1,7 @@
 package com.graduate_design.springboot.mapper;
 
 import com.graduate_design.springboot.entity.Organization;
+import com.graduate_design.springboot.entity.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -21,12 +22,13 @@ public interface OrganizationMapper {
     Boolean update(Organization organization);
 
     // 删除社团信息
-    @Delete("DELETE FROM organization WHERE orgID = #{orgID}")
-    Boolean delete(Integer orgID);
+    @Delete("DELETE FROM organization WHERE orgAdminID = #{orgAdminID}")
+    Boolean delete(Integer orgAdminID);
 
-    // 查某社团信息
+    // 根据社团名称、社团管理员ID，查社团信息
     @Select("SELECT * FROM organization WHERE orgName = #{orgName}")
     List<Organization> findOrgMsg(String orgName);
-
+    @Select("SELECT * FROM organization WHERE orgAdminID = #{orgAdminID}")
+    Organization findOrgMsgByAdminID(Integer orgAdminID);
 
 }

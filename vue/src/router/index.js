@@ -27,7 +27,7 @@ const routes = [
     {
         path: '/',
         component: FrontManage,     // 固定的框架
-        redirect: "/home",
+        redirect: "/login",
         children: [
             {path: 'home', name:'活动首页', component: Home},
             {path: 'sign', name:'已报名活动', component: SignUp},
@@ -61,6 +61,19 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+});
+
+router.beforeEach((to, from, next)=>{
+
+    // 检查本地存储是否有已登录的用户信息
+    let userLogin = JSON.parse(localStorage.getItem('userLogin'))
+    // 如果用户访问登录页，则直接放行
+    if (to.path === "/login") return next();
+    // 如果用户未登录，则直接返回登陆页
+    if (!userLogin) return next("/login")
+    next();
+
 })
+
 
 export default router

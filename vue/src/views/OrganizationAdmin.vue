@@ -1,20 +1,22 @@
 <template>
   <div>
-    <div style="margin-bottom: 10px">
-      <el-button type="primary" @click="dialogFormVisible = true"> 新增社团 <i class="el-icon-circle-plus-outline"></i></el-button>
+    <div>
+      <el-button type="primary" @click="addOrg()" style="float:right; margin-bottom: 10px">
+        新增社团 <i class="el-icon-circle-plus-outline"></i>
+      </el-button>
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="orgID" label="社团ID" width="60" align="center"></el-table-column>
+      <el-table-column prop="orgID" label="社团ID" width="80" align="center"></el-table-column>
       <el-table-column prop="orgName" label="社团名称" width="100" align="center"></el-table-column>
       <el-table-column prop="orgCreatedDate" label="社团创建时间" width="100" align="center"></el-table-column>
       <el-table-column prop="orgSummary" label="社团概要"></el-table-column>
-      <el-table-column prop="orgAdminID" label="社团管理员ID" width="100" align="center"></el-table-column>
+      <el-table-column prop="orgAdminID" label="社团管理员ID" width="120" align="center"></el-table-column>
       <el-table-column label="操作"  width="200" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="alter(scope.row)">修改<i class="el-icon-edit"></i></el-button>
           <el-popconfirm confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info" icon-color="red"
-                         title="您确定删除该数据吗？" @confirm="del(scope.row.orgID)">
+                         title="您确定删除该数据吗？" @confirm="del(scope.row)">
             <el-button style="margin-left: 10px" type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
           </el-popconfirm>
         </template>
@@ -61,12 +63,21 @@
 </template>
 
 <script>
+import {interceptors} from "axios";
+
 export default {
   name: "OrganizationAdmin",
   data(){
     const checkChinese = (rule, value, callback) => {
       if (/^[0-9]*$/.test(value) == true) {       // 如果全是数字就报错
         callback(new Error("请输入中文或字母或数字的组合"));
+      } else {          //校验通过
+        callback();
+      }
+    };
+    const checkNumber = (rule, value, callback) => {
+      if (/^([1-9][0-9]*){1,10}$/.test(value) == false) {
+        callback(new Error("请输入正整数"));
       } else {          //校验通过
         callback();
       }
@@ -78,6 +89,8 @@ export default {
       pageSize: 5,
       dialogFormVisible: false,
       oldOrgAdminID: '',    // 修改社团管理员时，保存原来的社团管理员ID
+      orgNameList: [],      // 记录所有社团名称
+      orgAdminIDList: [],     // 记录所有社团管理员ID
       form: {},
       rules: {
         orgCreatedDate: [ {required: true, message: '请选择日期', trigger: 'blur'} ],
@@ -89,14 +102,13 @@ export default {
           {required: true, message: '请输入社团概要', trigger: 'blur'},
           {validator: checkChinese, trigger: "blur"}
         ],
-        orgAdminID: [ {required: true, message: '请输入社团管理员ID', trigger: 'blur'} ],
-        orgAdminName: [
-          {required: true, message: '请输入社团管理员用户名', trigger: 'blur'},
-          {validator: checkChinese, trigger: "blur"}
+        orgAdminID: [
+          {required: true, message: '请输入社团管理员ID', trigger: 'blur'},
+          {validator: checkNumber, trigger: "blur"}
         ],
       },
       pickerOptions: {
-        disabledDate(time) {
+        disabledDate(time) {    // 未来的时间不可选
           return time.getTime() > Date.now();
         }
       }
@@ -116,7 +128,12 @@ export default {
       }).then(res => {
         this.tableData = res.data
         this.total = res.total
+        for (let i = 0; i < res.data.length; i++) {
+          this.orgNameList[i] = res.data[i].orgName
+          this.orgAdminIDList[i] = res.data[i].orgAdminID
+        }
       })
+
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize
@@ -127,6 +144,11 @@ export default {
       this.load()
     },
 
+    addOrg(){
+      this.form = {}
+      this.dialogFormVisible = true
+      this.oldOrgAdminID = 9999   // 9999代表不存在旧管理员
+    },
     alter(row){
       this.dialogFormVisible = true
       this.form = row
@@ -141,8 +163,8 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid){
           this.request.post("/org/save",this.form).then(res =>{
-            if (res){                                           // 修改社团信息成功
-              if (this.oldOrgAdminID != this.form.orgAdminID){  // 修改社团管理员为另一人
+            if (res == "0"){                                      // 修改、插入社团信息成功
+              if (this.oldOrgAdminID !== this.form.orgAdminID){   // 修改社团管理员为另一人
                 this.request.get("/user/alterAdmin",{
                   params:{
                     oldOrgAdminID: this.oldOrgAdminID,
@@ -155,16 +177,26 @@ export default {
               this.dialogFormVisible = false
               this.load()
               // window.location.reload()      // 刷新页面
+            } else if (res == "1"){
+              this.$message.error("社团名称重复")
+            } else if (res == "2"){
+              this.$message.error("社团管理员ID重复")
+            } else if (res == "3"){
+              this.$message.error("社团管理员不存在")
+            } else if (res == null){
+              this.$message.error("系统繁忙，请稍候重试")
             }
           })
+
         }
       });
     },
-    del(orgID){
-      this.request.delete("/org/" + orgID).then(res =>{
+    del(row){
+      this.request.delete("/org/"+row.orgAdminID).then(res =>{
         if (res){
           this.$message.success("删除成功")
-          window.location.reload()      // 刷新页面
+          this.load()
+          // window.location.reload()      // 刷新页面
         }
       })
     },

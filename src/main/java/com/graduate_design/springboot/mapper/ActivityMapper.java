@@ -35,4 +35,13 @@ public interface ActivityMapper {
     @Update("UPDATE activity,sign SET activity.endStatus = '活动已结束',sign.STATUS = '已参加' " +
             "WHERE activity.activityID = #{activityID} AND sign.activityID =#{activityID}")
     Boolean ending(Integer activityID);
+
+    @Select("SELECT * FROM activity WHERE name LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
+            "AND organizer LIKE concat('%', #{organizer}, '%') AND endStatus=#{endStatus} limit #{pageNum}, #{pageSize}")
+    List<Activity> findEndActivity(Integer pageNum, Integer pageSize,String activityName,
+                                String organizer, String address, String endStatus);
+    @Select("SELECT count(*) FROM activity WHERE name LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
+            "AND organizer LIKE concat('%', #{organizer}, '%')  AND endStatus = #{endStatus}")
+    Integer totalEndActivity(String activityName, String organizer, String address, String endStatus);
+
 }

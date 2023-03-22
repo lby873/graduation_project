@@ -26,12 +26,12 @@ public class OrganizationController {
     }
 
     @PostMapping("/save")
-    public Boolean save(@RequestBody Organization organization){
+    public String save(@RequestBody Organization organization){
         return organizationService.save(organization);
     }
 
-    @DeleteMapping("/{orgID}")
-    public Boolean delete(@PathVariable Integer orgID){
-        return organizationService.delete(orgID);
+    @DeleteMapping("/{orgAdminID}")
+    public Boolean delete(@PathVariable Integer orgAdminID){
+        return organizationService.delete(orgAdminID);
     }
 }

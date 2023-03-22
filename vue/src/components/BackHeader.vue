@@ -4,7 +4,7 @@
       <span :class="collapseBtnClass" style="cursor: pointer" @click="collapse"></span>
     </div>
     <div style="text-align:right; width: 150px; cursor: pointer;">
-      <span><b style="font-size: 16px">欢迎您，超级管理员</b></span>
+      <span><b style="font-size: 16px; color: #ffd04b">欢迎您，超级管理员</b></span>
     </div>
   </div>
 </template>

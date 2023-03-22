@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin: 10px 0">
+    <div style="margin: 10px 0;">
       <template>
         <el-input style="width: 200px;" placeholder="请输入活动名称" suffix-icon="el-icon-search" v-model="activityName"></el-input>
         <el-input style="width: 200px;margin-left: 20px;" placeholder="请输入社团名称" suffix-icon="el-icon-search" v-model="organizer"></el-input>
@@ -11,7 +11,7 @@
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="activityID" label="活动ID" width="60" align="center"></el-table-column>
+      <el-table-column prop="activityID" label="活动ID" width="80" align="center"></el-table-column>
       <el-table-column prop="time" label="活动时间" width="100" align="center"></el-table-column>
       <el-table-column prop="name" label="活动名称" width="120" align="center"></el-table-column>
       <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>

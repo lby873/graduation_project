@@ -8,13 +8,13 @@
       </template>
       <el-button style="margin-left: 20px;" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
-    </div>
-    <div style="margin-bottom: 20px">
-      <el-button type="primary" @click="dialogFormVisible = true"> 新增活动 <i class="el-icon-circle-plus-outline"></i></el-button>
+      <el-button type="primary" @click="addActivity()" style="float:right; margin-bottom: 10px">
+        新增活动 <i class="el-icon-circle-plus-outline"></i>
+      </el-button>
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="activityID" label="活动ID" width="60" align="center"></el-table-column>
+      <el-table-column prop="activityID" label="活动ID" width="80" align="center"></el-table-column>
       <el-table-column prop="time" label="活动时间" width="100" align="center"></el-table-column>
       <el-table-column prop="name" label="活动名称" width="100" align="center"></el-table-column>
       <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
@@ -29,7 +29,7 @@
             <el-button type="warning" slot="reference">结束活动</el-button>
           </el-popconfirm>
           <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='取消'
-                         icon="el-icon-info" icon-color="red" title="您确定删除该数据吗？" @confirm="del(scope.row.activityID)">
+                         icon="el-icon-info" icon-color="red" title="您确定删除该数据吗？" @confirm="del(scope.row)">
             <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
           </el-popconfirm>
         </template>
@@ -40,7 +40,7 @@
     <el-dialog title="发布活动" :visible.sync="dialogFormVisible" width="30%" center>
       <el-form :model="form" :rules="rules" ref="form" label-width="auto" size="small">
         <el-form-item label="活动时间" prop="time">
-          <el-date-picker v-model="form.time" type="date" placeholder="选择日期"
+          <el-date-picker v-model="form.time" type="date" placeholder="选择日期" :picker-options="pickerOptions"
                           style="width: 100%" value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
@@ -83,6 +83,7 @@
 </template>
 
 <script>
+
 export default {
   name: "activityAdmin",
   data(){
@@ -123,6 +124,13 @@ export default {
           {validator: checkChinese, trigger: "blur"}
         ],
       },
+      pickerOptions: {
+        disabledDate(time) {    // 已经过去的时间不可选
+          return time.getTime() < Date.now();
+        }
+      },
+
+
     }
   },
   created() {   // 请求分页查询数据
@@ -145,9 +153,12 @@ export default {
       })
 
       this.request.get("/user/org").then(res =>{    // 查询社团列表
-        this.orgList = res
+        for (let i=0;i<res.length;i++){
+          if (res[i].organization !== "无"){
+            this.orgList[i] = res[i]
+          }
+        }
       })
-      console.log(this.orgList)
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize
@@ -175,13 +186,17 @@ export default {
             if (res){
               this.$message.success("修改成功")
               this.dialogFormVisible = false
-              window.location.reload()      // 刷新页面
+              this.load()
+              // window.location.reload()      // 刷新页面
             }
           })
         }
       });
     },
-
+    addActivity(){
+      this.dialogFormVisible = true
+      this.form = {}
+    },
     alter(row){
       this.dialogFormVisible = true
       this.form = row
@@ -195,15 +210,19 @@ export default {
         }
       })
     },
-    ending(activityID) {
-      this.request.post("/activity/ending/"+activityID).then(res =>{
-        if (res){
-          this.$message.success("修改成功")
-          this.load()
-        } else {
-          this.$message.error("当前活动没有人报名，无法结束活动，请删除")
-        }
-      })
+    ending(row) {
+      if (row.endStatus == "活动已结束"){
+        this.$message.error("操作失败，活动已是结束状态")
+      } else {
+        this.request.post("/activity/ending/"+row.activityID).then(res =>{
+          if (res){
+            this.$message.success("修改成功")
+            this.load()
+          } else {
+            this.$message.error("当前活动没有人报名，无法结束活动，您可以选择删除活动")
+          }
+        })
+      }
     },
   }
 }

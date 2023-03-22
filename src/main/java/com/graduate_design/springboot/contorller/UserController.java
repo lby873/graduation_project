@@ -17,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")      // 登录
-    public User login(@RequestBody UserDTO userDTO) {   // 新增或者更新，requestBody将json转为User类型
+    public Map<String, Object> login(@RequestBody UserDTO userDTO) {   // 新增或者更新，requestBody将json转为User类型
         return userService.login(userDTO);
     }
 
@@ -30,9 +30,9 @@ public class UserController {
     }
 
     // 删除用户
-    @DeleteMapping("/{activityID}")     //删除
-    public Boolean delete(@PathVariable Integer activityID) {
-        return userService.deleteById(activityID);
+    @DeleteMapping("/{userID}")     //删除
+    public Boolean delete(@PathVariable Integer userID) {
+        return userService.deleteById(userID);
     }
 
     //查询

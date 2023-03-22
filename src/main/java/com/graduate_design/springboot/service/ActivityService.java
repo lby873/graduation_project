@@ -53,4 +53,15 @@ public class ActivityService {
     public Boolean ending(Integer activityID) {
         return activityMapper.ending(activityID);
     }
+
+    public Map<String, Object> findActivityEndPage(Integer pageNum, Integer pageSize, String activityName,
+                                                   String organizer, String address, String endStatus) {
+        pageNum = (pageNum - 1) * pageSize;
+        List<Activity> data = activityMapper.findEndActivity(pageNum, pageSize, activityName, organizer, address,endStatus);
+        Integer total = activityMapper.totalEndActivity(activityName, organizer, address,endStatus);
+        Map<String, Object> res = new HashMap<>();
+        res.put("data", data);
+        res.put("total", total);
+        return res;
+    }
 }

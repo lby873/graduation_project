@@ -53,3 +53,10 @@ import Header from "@/components/BackHeader.vue";
     }
   }
 </script>
+<style>
+.el-main {
+  /*设置右侧 main 高度*/
+  height: calc(100vh - 60px);
+}
+
+</style>

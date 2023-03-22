@@ -11,7 +11,7 @@
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="activityID" label="活动ID" width="60" align="center"></el-table-column>
+      <el-table-column prop="activityID" label="活动ID" width="80" align="center"></el-table-column>
       <el-table-column prop="time" label="活动时间" width="100" align="center"></el-table-column>
       <el-table-column prop="name" label="活动名称" width="120" align="center"></el-table-column>
       <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
@@ -41,7 +41,6 @@
     name: "ActivityEnd",
     data(){
       return {
-        userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
         tableData: [],
         total: 0,
         pageNum: 1,
@@ -58,11 +57,10 @@
     methods:{
       load(){
         // 用axios请求数据
-        this.request.get("/sign/activityPage",{
+        this.request.get("/activity/activityEndPage",{
           params: {
             pageNum: this.pageNum,
             pageSize: this.pageSize,
-            userID: this.userLogin.userID,
             activityName: this.activityName,
             organizer: this.organizer,
             address: this.address,

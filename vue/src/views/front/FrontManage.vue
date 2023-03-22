@@ -29,7 +29,7 @@ import Header from "@/components/FrontHeader.vue";
       return {
         collapseBtnClass: 'el-icon-s-fold',
         isCollapse: false,
-        sideWidth: 250,
+        sideWidth: 270,
         logoTextShow: true,
         drawer: false,
       }
@@ -46,7 +46,7 @@ import Header from "@/components/FrontHeader.vue";
           this.collapseBtnClass = 'el-icon-s-unfold'
           this.logoTextShow = false
         } else {                // 展开
-          this.sideWidth = 250
+          this.sideWidth = 270
           this.collapseBtnClass = 'el-icon-s-fold'
           this.logoTextShow = true
         }
@@ -54,3 +54,11 @@ import Header from "@/components/FrontHeader.vue";
     }
   }
 </script>
+
+<style>
+.el-main {
+  /*设置右侧 main 高度*/
+  height: calc(100vh - 60px);
+}
+
+</style>

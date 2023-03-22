@@ -35,7 +35,6 @@ public class SignService {
         res.put("data", data);
         res.put("total", total);
         return res;
-
     }
 
     // 已报名、已参加列表，返回sign对象列表

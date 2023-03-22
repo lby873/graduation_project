@@ -2,10 +2,10 @@
   <div>
     <div style="margin: 10px 0">
       <template>
-        <el-input style="width: 200px;" placeholder="请输入用户名" suffix-icon="el-icon-search" v-model="user_name"></el-input>
-        <el-input style="width: 200px; margin-left: 10px;" placeholder="请输入昵称" suffix-icon="el-icon-search" v-model="nick_name"></el-input>
-        <el-input style="width: 200px; margin-left: 10px;" placeholder="请输入手机号" suffix-icon="el-icon-search" v-model="phone_number"></el-input>
-        <el-select style="width: 200px; margin-left: 10px;" placeholder="请选择用户身份" suffix-icon="el-icon-search" v-model="identitySelect">
+        <el-input style="width: 180px;" placeholder="请输入用户名" suffix-icon="el-icon-search" v-model="user_name"></el-input>
+        <el-input style="width: 180px; margin-left: 10px;" placeholder="请输入昵称" suffix-icon="el-icon-search" v-model="nick_name"></el-input>
+        <el-input style="width: 180px; margin-left: 10px;" placeholder="请输入手机号" suffix-icon="el-icon-search" v-model="phone_number"></el-input>
+        <el-select style="width: 180px; margin-left: 10px;" placeholder="请选择用户身份" suffix-icon="el-icon-search" v-model="identitySelect">
           <el-option v-for="item in identityList" :key="item.identity" :label="item.identity"
                      :value="item.identity" >
           </el-option>
@@ -19,24 +19,24 @@
       </template>
       <el-button style="margin-left: 10px;" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
+      <el-button type="primary" @click="handleAdd" style="float:right; margin-bottom: 10px">
+        新增用户 <i class="el-icon-circle-plus-outline"></i>
+      </el-button>
     </div>
 
-    <div style="margin: 10px 0">
-      <el-button type="primary" @click="handleAdd"> 新增用户 <i class="el-icon-circle-plus-outline"></i></el-button>
-    </div>
 <!--    用户数据表-->
-    <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="userID" label="用户ID"></el-table-column>
-      <el-table-column prop="username" label="用户名" ></el-table-column>
-      <el-table-column prop="nickname" label="昵称"></el-table-column>
-      <el-table-column prop="phone" label="手机号码"></el-table-column>
-      <el-table-column prop="identity" label="用户身份"></el-table-column>
-      <el-table-column prop="organization" label="所属社团"></el-table-column>
-      <el-table-column label="操作"  width="200" align="center">
+    <el-table :data="tableData" border stripe header-cell-class-name="headerBg" >
+      <el-table-column prop="userID" label="用户ID" width="80" align="center"></el-table-column>
+      <el-table-column prop="username" label="用户名" align="center"></el-table-column>
+      <el-table-column prop="nickname" label="昵称" align="center"></el-table-column>
+      <el-table-column prop="phone" label="手机号码" align="center"></el-table-column>
+      <el-table-column prop="identity" label="用户身份" align="center"></el-table-column>
+      <el-table-column prop="organization" label="所属社团" align="center"></el-table-column>
+      <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">修改<i class="el-icon-edit"></i></el-button>
           <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
-                         icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row.userID)">
+                         icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row)">
             <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
           </el-popconfirm>
         </template>
@@ -69,17 +69,16 @@
           <el-input v-model="form.nickname" placeholder="请输入昵称"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
-          <el-input v-model="form.phone" type="number" placeholder="请输入电话"></el-input>
+          <el-input v-model="form.phone" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item label="用户身份" prop="identity">
-          <el-select v-model="form.identity" @change="orgChange" placeholder="请选择用户身份">
+          <el-select v-model="form.identity" placeholder="请选择用户身份"  :disabled="identityDisabled">
             <el-option v-for="item in identityList" :key="item.identity" :label="item.identity"
-                       :value="item.identity" >
+                       :value="item.identity">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属组织" prop="organization"
-                      :rules="[ {required: orgRequired, message: '请选择社团', trigger: 'change'} ]">
+        <el-form-item label="所属组织" prop="organization">
           <el-select v-model="form.organization" :disabled="orgDisabled" placeholder="请选择社团组织">
             <el-option v-for="item in orgList" :key="item.organization" :label="item.organization"
                        :value="item.organization" >
@@ -100,6 +99,15 @@
 export default {
   name: "UserAdmin",
   data() {
+    const checkOrg = (rule, value, callback) => {
+      if (value === '无' &&　this.form.identity !== "普通用户") {
+        callback(new Error('请选择社团组织'));
+      } else if (value !== "无" && this.form.identity === "普通用户"){
+        callback(new Error('普通用户应选择 “无”'));
+      } else{
+        callback();
+      }
+    };
     return {
       tableData: [],
       total: 0,
@@ -111,8 +119,8 @@ export default {
       identitySelect: "",
       orgSelect: "",
       pwRequired: true,
-      orgDisabled: false,    // 启用输入框
-      orgRequired: false,   // 不必填
+      orgDisabled: false,       // 组织选择框可用
+      identityDisabled: false,  // 身份选择框可用
       dialogFormVisible: false,   //表单不可见
       identityList: [],
       orgList: [],
@@ -171,7 +179,8 @@ export default {
             trigger: "blur"
           }
         ],
-        identity: [ {required: true, message: '请选择用户身份', trigger: 'change'} ]
+        identity: [ {required: true, message: '请选择用户身份', trigger: 'change'} ],
+        organization: [ {required: true, validator: checkOrg, trigger: 'change'} ],
       }
     }
   },
@@ -209,8 +218,8 @@ export default {
       this.identitySelect = ""
       this.load()
     },
-    del(id) {
-      this.request.delete("/user/" + id).then(res => {
+    del(row) {
+      this.request.delete("/user/" + row.userID).then(res => {
         if (res) {
           this.$message.success("删除成功")
           this.load()
@@ -229,7 +238,7 @@ export default {
               this.dialogFormVisible = false
               this.load()
             } else {
-              this.$message.error("保存失败，用户名已存在")
+              this.$message.error("保存失败，用户名重复")
               return false;
             }
           })
@@ -241,28 +250,27 @@ export default {
       this.dialogFormVisible = false
       this.form = []
       this.orgDisabled = false
-      this.orgRequired = false
-    },
-    orgChange(value){      //改变所属社团输入框的可用性
-      if (value == "普通用户") {
-        this.orgDisabled = true       // 不启用输入框
-        this.form.organization = "无"   // 社团组织默认值
-        this.orgRequired = false      // 改为“非必填”
-      } else {
-        this.orgRequired = true
-        this.form.organization = "学生会"   // 社团组织默认值
-        this.orgDisabled = false
-      }
+      this.load()
     },
     handleAdd(){      //添加新用户
       this.dialogFormVisible = true
       this.form = {}
       this.pwRequired = true
+      this.orgDisabled = false
+      this.identityDisabled = false
     },
     handleEdit(row){
       this.dialogFormVisible = true
       this.form = row
       this.pwRequired = false
+      if (row.identity === "社团管理员"){
+        console.log(row.identity)
+        this.orgDisabled = true
+        this.identityDisabled = true
+      }else{
+        this.orgDisabled = false
+        this.identityDisabled = false
+      }
     },
 
     handleSizeChange(pageSize) {

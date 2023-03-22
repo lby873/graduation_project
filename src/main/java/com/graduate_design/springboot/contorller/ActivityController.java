@@ -52,4 +52,14 @@ public class ActivityController {
 //        return activityService.findOrgPage(pageNum,pageSize,organizer);
 //    }
 
+    @GetMapping("/activityEndPage")    // 活动列表
+    public Map<String, Object> findActivityEndPage(@RequestParam Integer pageNum,
+                                                @RequestParam Integer pageSize,
+                                                @RequestParam String activityName,
+                                                @RequestParam String organizer,
+                                                @RequestParam String address,
+                                                @RequestParam String endStatus) {
+        return activityService.findActivityEndPage(pageNum,pageSize,activityName,organizer,address,endStatus);
+    }
+
 }

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.graduate_design.springboot.mapper")        // 可以取消 mapper 里面类前面的“@mapper”
+//@MapperScan("com.graduate_design.springboot.mapper")        // 可以取消 mapper 里面类前面的“@mapper”
 public class MybatisPlusConfig {
     // 最新版
     @Bean

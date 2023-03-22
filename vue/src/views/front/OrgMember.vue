@@ -1,19 +1,19 @@
 <template>
   <div>
     <el-table :data="memberTableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="userID" label="用户ID" ></el-table-column>
-      <el-table-column prop="username" label="用户名" ></el-table-column>
-      <el-table-column prop="nickname" label="昵称"></el-table-column>
-      <el-table-column prop="phone" label="手机号码"></el-table-column>
-      <el-table-column prop="identity" label="用户身份"></el-table-column>
-      <el-table-column prop="organization" label="所属社团"></el-table-column>
+      <el-table-column prop="userID" label="用户ID" align="center"></el-table-column>
+      <el-table-column prop="username" label="用户名" align="center"></el-table-column>
+      <el-table-column prop="nickname" label="昵称" align="center"></el-table-column>
+      <el-table-column prop="phone" label="手机号码" align="center"></el-table-column>
+      <el-table-column prop="identity" label="用户身份" align="center"></el-table-column>
+      <el-table-column prop="organization" label="所属社团" align="center"></el-table-column>
       <el-table-column label="操作"  width="200" align="center" v-if="alterIdentityVisible">
         <!--v-if 设置是否可见-->
         <template slot-scope="scope">
           <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='取消'
-                         icon="el-icon-info" icon-color="red" title="您确定将该成员修改为普通用户吗？"
+                         icon="el-icon-info" icon-color="red" title="您确定将删除该成员吗？"
                          @confirm="alterIdentity(scope.row.userID)">
-            <el-button type="danger" slot="reference">修改为普通用户<i class="el-icon-remove-outline"></i></el-button>
+            <el-button type="danger" slot="reference">删除成员 <i class="el-icon-remove-outline"></i></el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -55,7 +55,7 @@
       alterIdentity(userID){
         this.request.post("/user/alterMemberIdentity/" + userID).then(res => {
           if (res) {
-            this.$message.success("修改成功")
+            this.$message.success("删除成员成功")
             this.load()
             // window.location.reload()      // 刷新页面
           }

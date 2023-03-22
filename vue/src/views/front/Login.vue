@@ -149,14 +149,18 @@ export default {
       this.$refs['userLogin'].validate((valid) => {
         if (valid) {      // 表单校验合法
           this.request.post("/user/login", this.user).then(res => {
-            if(res.username == null) {           // 查询数据库返回的对象是否为空
-              this.$message.error("用户名或密码或身份错误")
+            if(res.code == "1") {           // 用户名不存在
+              this.$message.error("用户名不存在，请注册")
+            } else if(res.code == "2") {           // 密码错误
+              this.$message.error("密码错误")
+            } else if(res.code == "3") {           // 用户身份错误
+              this.$message.error("用户身份错误")
             } else {
               this.$message.success("恭喜您，登录成功")
-              localStorage.setItem("userLogin", JSON.stringify(res))  // 存储用户信息到浏览器（把对象转为json存储）
-              if (res.identity == "社团管理员"){   // 如果是社团管理员，则跳转到发布活动页面
+              localStorage.setItem("userLogin", JSON.stringify(res.data))  // 存储用户信息到浏览器（把对象转为json存储）
+              if (res.data.identity == "社团管理员"){   // 社团管理员，则跳转到发布活动页面
                 this.$router.push("/addActivity")
-              } else {
+              } else {                                // 普通用户、社团成员，跳转到活动首页
                 this.$router.push("/home")
               }
             }

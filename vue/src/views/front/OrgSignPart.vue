@@ -10,7 +10,7 @@
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="activityID" label="活动ID" align="center"></el-table-column>
+      <el-table-column prop="activityID" sortable label="活动ID" align="center"></el-table-column>
       <el-table-column prop="activityTime" label="活动时间" align="center"></el-table-column>
       <el-table-column prop="activityName" label="活动名称" width="150" align="center"></el-table-column>
       <el-table-column prop="organizer" label="主办方社团" align="center"></el-table-column>

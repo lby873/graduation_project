@@ -3,6 +3,9 @@
     padding: 0;
     box-sizing: border-box;
 }
+div.el-input,div.el-table{
+    font-size: 13px;
+}
 
 .ml-5 {
     margin-left: 5px;

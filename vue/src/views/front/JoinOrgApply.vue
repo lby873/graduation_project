@@ -1,5 +1,7 @@
 <template>
   <div>
+
+    <!--    普通用户申请-->
     <div v-if="userApplyVisible">
       <el-popconfirm confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info"
                      icon-color="red" title="您确定取消申请吗？" @confirm="cancelApply()" v-show="cancelJoin">
@@ -9,7 +11,7 @@
       </el-popconfirm>
 
       <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-        <el-table-column prop="orgID" label="社团ID" width="60" align="center"></el-table-column>
+        <el-table-column prop="orgID" label="社团ID" width="80" align="center"></el-table-column>
         <el-table-column prop="orgName" label="社团名称" width="100" align="center"></el-table-column>
         <el-table-column prop="orgCreatedDate" label="社团创建时间" width="100" align="center"></el-table-column>
         <el-table-column prop="orgSummary" label="社团概要"></el-table-column>
@@ -34,8 +36,8 @@
       </div>
     </div>
 
+    <!--    社团管理员审核-->
     <div v-if="orgAdminVisible">
-
       <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
         <el-table-column prop="userID" label="用户ID" width="100" align="center"></el-table-column>
         <el-table-column prop="username" label="用户名" align="center"></el-table-column>
@@ -106,7 +108,7 @@ export default {
           this.tableData = res.data
         })
 
-      } else {    // 普通用户登录
+      } else {        // 普通用户登录
         this.request.get("/org/page",{
           params: {
             pageNum: this.pageNum,
@@ -123,11 +125,11 @@ export default {
             organization: ''
           }
         }).then(res =>{
-          if (res.data.length > 0){      // 已申请加入
+          if (res.data.length > 0){      // 已有申请记录
             this.joinBtn = true     // 设置申请加入按钮不可用
             this.cancelJoin = true  // 设置取消加入按钮可见
             this.joinOrganization = res.data[0].joinOrganization
-          } else {                  // 未申请加入
+          } else {                  // 没有申请记录
             this.joinBtn = false     // 设置申请加入按钮可用
             this.cancelJoin = false  // 设置取消加入按钮不可见
           }
@@ -179,7 +181,7 @@ export default {
       this.request.post("/user/alterUserToMember/"+row.userID,this.userLogin.organization).then(res => {
         if (res) {
           this.$message.success("已同意该申请")
-          this.request.delete("/joinOrg/" + row.userID)
+          this.request.delete("/joinOrg/" + row.userID)   // 申请表删除该记录
           window.location.reload()      // 必须刷新页面
         }
       })
