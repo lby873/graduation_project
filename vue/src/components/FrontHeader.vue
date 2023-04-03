@@ -1,7 +1,7 @@
 <template>
-  <div style="font-size: 12px; border-bottom: 1px solid #ccc; line-height: 60px; display: flex;">
+  <div style="font-size: 12px; border-bottom: 1px solid #ccc; line-height: 60px; display: flex;background: none">
     <div style="flex: 1; font-size: 20px">
-      <span :class="collapseBtnClass" style="cursor: pointer" @click="collapse"></span>
+      <span :class="collapseBtnClass" style="cursor: pointer;color: white" @click="collapse"></span>
     </div>
     <el-dropdown style="width: 250px; cursor: pointer;">
       <div style="text-align:right;font-size: 16px">

@@ -28,25 +28,21 @@ public class SignController {
     }
 
     @GetMapping("/activityPage")    // 活动列表
-    public Map<String, Object> findActivityPage(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize,
-                                        @RequestParam Integer userID,
+    public Map<String, Object> findActivityPage(@RequestParam Integer userID,
                                         @RequestParam String activityName,
                                         @RequestParam String organizer,
                                         @RequestParam String address,
                                         @RequestParam String endStatus) {
-        return signService.findActivityPage(pageNum,pageSize,userID,activityName,organizer,address,endStatus);
+        return signService.findActivityPage(userID,activityName,organizer,address,endStatus);
     }
 
     @GetMapping("/page")        // 已报名、已参与列表
-    public Map<String, Object> findPage(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize,
-                                        @RequestParam Integer userID,
+    public Map<String, Object> findPage(@RequestParam Integer userID,
                                         @RequestParam String activityName,
                                         @RequestParam String organizer,
                                         @RequestParam String address,
                                         @RequestParam Integer pageShow) {
-        return signService.findPage(pageNum,pageSize,userID,activityName,organizer,address,pageShow);
+        return signService.findPage(userID,activityName,organizer,address,pageShow);
     }
 
     @GetMapping("/allPage")        // 所有活动报名参与记录列表

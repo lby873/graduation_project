@@ -8,10 +8,8 @@ import java.util.List;
 
 @Mapper
 public interface OrganizationMapper {
-    @Select("SELECT * FROM organization limit #{pageNum}, #{pageSize}")
-    List<Organization> selectPage(Integer pageNum, Integer pageSize);
-    @Select("SELECT count(*) FROM organization ")
-    Integer selectTotal();
+    @Select("SELECT * FROM organization")
+    List<Organization> selectPage();
 
     // 新增，修改社团信息
     @Insert("INSERT into organization(orgName,orgSummary,orgCreatedDate,orgAdminID) " +

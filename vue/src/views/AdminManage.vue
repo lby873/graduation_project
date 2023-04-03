@@ -16,6 +16,13 @@
       </el-main>
     </el-container>
 
+    <!--背景视频-->
+<!--    <div class="videoContainer">-->
+<!--      <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">-->
+<!--        <source src="../assets/bgVideo.mp4" type="video/mp4">-->
+<!--      </video>-->
+<!--    </div>-->
+
   </el-container>
 </template>
 

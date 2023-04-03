@@ -1,27 +1,29 @@
 <template>
-  <div>
+  <div style="margin: 0 10px">
     <div>
-      <el-button type="primary" @click="addOrg()" style="float:right; margin-bottom: 10px">
+      <el-button type="primary" @click="addOrg()" style="margin-bottom: 20px;font-size: 13px">
         新增社团 <i class="el-icon-circle-plus-outline"></i>
       </el-button>
     </div>
 
-    <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="orgID" label="社团ID" width="80" align="center"></el-table-column>
-      <el-table-column prop="orgName" label="社团名称" width="100" align="center"></el-table-column>
-      <el-table-column prop="orgCreatedDate" label="社团创建时间" width="100" align="center"></el-table-column>
-      <el-table-column prop="orgSummary" label="社团概要"></el-table-column>
-      <el-table-column prop="orgAdminID" label="社团管理员ID" width="120" align="center"></el-table-column>
-      <el-table-column label="操作"  width="200" align="center">
-        <template slot-scope="scope">
-          <el-button type="success" @click="alter(scope.row)">修改<i class="el-icon-edit"></i></el-button>
-          <el-popconfirm confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info" icon-color="red"
-                         title="您确定删除该数据吗？" @confirm="del(scope.row)">
-            <el-button style="margin-left: 10px" type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table-wrapper">
+      <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
+        <el-table-column prop="orgID" sortable label="社团ID" width="100" align="center"></el-table-column>
+        <el-table-column prop="orgName" label="社团名称" width="100" align="center"></el-table-column>
+        <el-table-column prop="orgCreatedDate" label="社团创建时间" width="120" align="center"></el-table-column>
+        <el-table-column prop="orgSummary" label="社团概要"></el-table-column>
+        <el-table-column prop="orgAdminID" label="社团管理员ID" width="120" align="center"></el-table-column>
+        <el-table-column label="操作"  width="200" align="center">
+          <template slot-scope="scope">
+            <el-button type="success" @click="alter(scope.row)">修改<i class="el-icon-edit"></i></el-button>
+            <el-popconfirm confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info" icon-color="red"
+                           title="您确定删除该数据吗？" @confirm="del(scope.row)">
+              <el-button style="margin-left: 10px" type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <!--    社团增加、修改，同个表单-->
     <el-dialog title="社团信息" :visible.sync="dialogFormVisible" width="30%" center>
@@ -47,18 +49,6 @@
       </div>
     </el-dialog>
 
-    <!-- 分页行 -->
-    <div style="padding: 10px 0">
-      <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          :page-sizes="[3, 5, 10, 15]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-      </el-pagination>
-    </div>
   </div>
 </template>
 
@@ -84,9 +74,6 @@ export default {
     };
     return {
       tableData: [],
-      total: 0,
-      pageNum: 1,
-      pageSize: 5,
       dialogFormVisible: false,
       oldOrgAdminID: '',    // 修改社团管理员时，保存原来的社团管理员ID
       orgNameList: [],      // 记录所有社团名称
@@ -120,14 +107,8 @@ export default {
   methods:{
     load(){
       // 用axios请求数据
-      this.request.get("/org/page",{
-        params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize
-        }
-      }).then(res => {
+      this.request.get("/org/page").then(res => {
         this.tableData = res.data
-        this.total = res.total
         for (let i = 0; i < res.data.length; i++) {
           this.orgNameList[i] = res.data[i].orgName
           this.orgAdminIDList[i] = res.data[i].orgAdminID
@@ -209,4 +190,27 @@ export default {
 .headerBg {
   background: #eee!important;
 }
+/**表格背景透明 */
+/*透明化整体*/
+.table-wrapper /deep/.el-table, .el-table__expanded-cell {
+  background-color: transparent !important;
+}
+/*透明化行、单元格,删除表头下横线*/
+.table-wrapper /deep/ tr, .table-wrapper /deep/ th, .table-wrapper /deep/ td {
+  background: #1439391c !important;
+  color:#fff;
+  line-height: 30px;
+  font-size: 15px;
+  /*    border-bottom: 0px; //删除表头下横线*/
+}
+/*//hover时样式*/
+.table-wrapper /deep/  .el-table tbody tr:hover>td {
+  background-color: #367f7f78 !important
+}
+/*// 表格内容(有用)*/
+.table-wrapper /deep/ .el-table__row {
+  background: #1439391c !important;
+  color: #46d4ff;
+}
+/**表格背景透明end */
 </style>

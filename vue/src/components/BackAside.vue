@@ -1,6 +1,5 @@
 <template>
-  <el-menu class="el-menu-vertical-demo" style="min-height: 100%;overflow-x: hidden; position:fixed;"
-           background-color=black
+  <el-menu class="el-menu-vertical-demo" style="min-height: 100%;overflow-x: hidden; position:fixed;background: none;"
            text-color="#fff"
            active-text-color="#ffd04b"
            :collapse-transition="false"
@@ -8,9 +7,9 @@
            router
   >
     <!--导航栏内容-->
-    <div style="height: 60px; line-height: 60px; text-align: center; margin-top: 10px">
+    <div style="height: 60px; line-height: 60px; text-align: center; margin-top: 10px;">
       <img src="../assets/logo.png" alt="" style="width: 40px; position: relative; top: 10px;">
-      <b style="color: white; font-size: 28px" v-show="logoTextShow"> 后台管理系统</b>
+      <b style="color: white; font-size: 28px;" v-show="logoTextShow"> 后台管理系统</b>
     </div>
     <el-menu-item index="/admin/userAdmin">
       <i class="el-icon-s-custom" ></i>
@@ -48,5 +47,10 @@ export default {
 </script>
 
 <style scoped>
-
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 250px;
+}
+/deep/.el-submenu .el-menu{
+  background: none;
+}
 </style>

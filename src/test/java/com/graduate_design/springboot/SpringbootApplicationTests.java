@@ -13,15 +13,7 @@ class SpringbootApplicationTests {
 
     @Test
     void contextLoads() {
-        String front = "user";
-        String password = "";
-        for (int i = 4;i<16;i++){
-            password = front + i;
-            System.out.println(password+" : "+encoder.encode(password));
-        }
-        System.out.println("stlhh : "+encoder.encode("stlhh"));
-        System.out.println("xmtzx : "+encoder.encode("xmtzx"));
-        System.out.println("xsh : "+encoder.encode("xsh"));
+        System.out.println("admin : "+encoder.encode("admin"));
 
 
 

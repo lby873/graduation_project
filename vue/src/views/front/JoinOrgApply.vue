@@ -3,41 +3,36 @@
 
     <!--    普通用户申请-->
     <div v-if="userApplyVisible">
-      <el-popconfirm confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info"
-                     icon-color="red" title="您确定取消申请吗？" @confirm="cancelApply()" v-show="cancelJoin">
-        <el-button type="danger" slot="reference" style="float:right; margin-bottom: 10px">
-          取消申请加入 {{this.joinOrganization}}
-        </el-button>
-      </el-popconfirm>
-
-      <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-        <el-table-column prop="orgID" label="社团ID" width="80" align="center"></el-table-column>
-        <el-table-column prop="orgName" label="社团名称" width="100" align="center"></el-table-column>
-        <el-table-column prop="orgCreatedDate" label="社团创建时间" width="100" align="center"></el-table-column>
-        <el-table-column prop="orgSummary" label="社团概要"></el-table-column>
-        <el-table-column label="操作"  width="200" align="center">
-          <template slot-scope="scope">
-            <el-button type="success" @click="apply(scope.row)" :disabled="joinBtn">申请加入 <i class="el-icon-edit"></i></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <!-- 分页行 -->
-      <div style="padding: 10px 0">
-        <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-sizes="[3, 5, 10, 15]"
-            :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-        </el-pagination>
+      <div v-show="cancelJoin">
+        <el-popconfirm confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info"
+                       icon-color="red" title="您确定取消申请吗？" @confirm="cancelApply()" >
+          <el-button type="danger" slot="reference" style="margin-bottom: 10px;font-size: 14px">
+            取消申请加入 {{this.joinOrganization}}
+          </el-button>
+        </el-popconfirm>
       </div>
+
+      <div style="margin-top: 10px">
+        <el-row :gutter="40">
+          <el-col :span="8" v-for="item in tableData" :key="item.value" style="margin-top: 10px">
+            <el-card shadow="hover" style="background-color: rgba(255, 255, 255, 0); color: white;font-size: 16px">
+              <el-row>
+                <div>
+                  <b style="font-size: 20px">{{ item.orgName }}</b>
+                  <el-button type="success" @click="apply(item)" :disabled="joinBtn" style="float:right;font-size: 14px"> 申请加入 </el-button>
+                </div>
+                <p style="margin-top: 10px">创立时间：{{ item.orgCreatedDate }}</p>
+                <p style="margin-top: 10px;line-height: 200%">社团概要：{{ item.orgSummary }}</p>
+              </el-row>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+
     </div>
 
     <!--    社团管理员审核-->
-    <div v-if="orgAdminVisible">
+    <div v-if="orgAdminVisible" class="table-wrapper" style="margin-top: 20px">
       <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
         <el-table-column prop="userID" label="用户ID" width="100" align="center"></el-table-column>
         <el-table-column prop="username" label="用户名" align="center"></el-table-column>
@@ -54,8 +49,9 @@
           </template>
         </el-table-column>
       </el-table>
-
     </div>
+
+
 
   </div>
 </template>
@@ -64,18 +60,17 @@
 export default {
   name: "JoinOrg",
   data(){
-
     return {
       userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
       tableData: [],
       total: 0,
       pageNum: 1,
-      pageSize: 5,
+      pageSize: 999999,
       joinBtn: false,     // 申请加入按钮
       cancelJoin: false,  // 取消申请加入按钮
-      joinOrganization: '',   // 已经申请加入的社团
-      userApplyVisible: true, // 用户加入社团申请div
-      orgAdminVisible: false, // 管理员审批申请div
+      joinOrganization: '',   // 已申请加入的社团名称
+      userApplyVisible: true, // 用户加入社团申请的div
+      orgAdminVisible: false, // 管理员审批申请的div
       joinOrgForm: {          // 申请加入社团的表单
         userID:'',
         username:'',
@@ -116,7 +111,6 @@ export default {
           }
         }).then(res => {
           this.tableData = res.data
-          this.total = res.total
         })
 
         this.request.get("/joinOrg/",{    // 查询是否已经有申请加入的记录
@@ -145,8 +139,8 @@ export default {
       this.load()
     },
 
-    apply(row){
-      this.joinOrgForm.organization = row.orgName
+    apply(item){
+      this.joinOrgForm.organization = item.orgName
       this.request.post("/joinOrg/applyToJoin",this.joinOrgForm).then(res => {
         if (res){
           // this.joinBtn = true     // 设置申请加入按钮不可用
@@ -197,4 +191,27 @@ export default {
 .headerBg {
   background: #eee!important;
 }
+/**表格背景透明 */
+/*透明化整体*/
+.table-wrapper /deep/.el-table, .el-table__expanded-cell {
+  background-color: transparent !important;
+}
+/*透明化行、单元格,删除表头下横线*/
+.table-wrapper /deep/ tr, .table-wrapper /deep/ th, .table-wrapper /deep/ td {
+  background: #1439391c !important;
+  color:#fff;
+  line-height: 30px;
+  font-size: 15px;
+  /*    border-bottom: 0px; //删除表头下横线*/
+}
+/*//hover时样式*/
+.table-wrapper /deep/  .el-table tbody tr:hover>td {
+  background-color: #367f7f78 !important
+}
+/*// 表格内容(有用)*/
+.table-wrapper /deep/ .el-table__row {
+  background: #1439391c !important;
+  color: #46d4ff;
+}
+/**表格背景透明end */
 </style>

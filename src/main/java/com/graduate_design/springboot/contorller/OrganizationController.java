@@ -15,9 +15,8 @@ public class OrganizationController {
     private OrganizationService organizationService;
 
     @GetMapping("/page")
-    public Map<String, Object> findPage(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize) {
-        return organizationService.findPage(pageNum,pageSize);
+    public Map<String, Object> findPage() {
+        return organizationService.findPage();
     }
 
     @GetMapping("/findOrgMsg")

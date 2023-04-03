@@ -1,6 +1,5 @@
 <template>
-  <el-menu class="el-menu-vertical-demo" style="min-height: 100%; overflow-x: hidden; position:fixed;"
-           background-color=black
+  <el-menu class="el-menu-vertical-demo" style="min-height: 100%; overflow-x: hidden; position:fixed;background: none"
            text-color="#fff"
            active-text-color="#ffd04b"
            :collapse-transition="false"
@@ -31,11 +30,7 @@
       </el-menu-item>
       <el-menu-item index="/part" v-show="userVisible">
         <i class="el-icon-setting"></i>
-        <span slot="title"><b style="font-size: 18px;"> 已参加活动</b></span>
-      </el-menu-item>
-      <el-menu-item index="/end" v-show="userVisible">
-        <i class="el-icon-folder-checked"></i>
-        <span slot="title"><b style="font-size: 18px;"> 已结束活动</b></span>
+        <span slot="title"><b style="font-size: 18px;"> 以往活动</b></span>
       </el-menu-item>
       <el-menu-item index="/orgMember" v-show="memberVisible">
         <i class="el-icon-user"></i>

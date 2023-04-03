@@ -12,9 +12,8 @@ public interface SignMapper {
     // 还未报名的活动列表
     @Select("SELECT * FROM activity WHERE activityID NOT IN (SELECT activityID FROM sign WHERE userID = #{userID}) " +
             "AND name LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
-            "AND organizer LIKE concat('%', #{organizer}, '%') AND endStatus=#{endStatus} limit #{pageNum}, #{pageSize}")
-    List<Activity> findActivity(Integer pageNum, Integer pageSize, Integer userID, String activityName,
-                                String organizer, String address, String endStatus);
+            "AND organizer LIKE concat('%', #{organizer}, '%') AND endStatus=#{endStatus}")
+    List<Activity> findActivity(Integer userID, String activityName, String organizer, String address, String endStatus);
     @Select("SELECT count(*) FROM activity WHERE activityID NOT IN (SELECT activityID FROM sign WHERE userID = #{userID}) " +
             "AND name LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
             "AND organizer LIKE concat('%', #{organizer}, '%')  AND endStatus = #{endStatus}")
@@ -23,8 +22,8 @@ public interface SignMapper {
     // 已经报名的活动列表
     @Select("SELECT * FROM sign WHERE userID = #{userID} AND status = '已报名' AND activityName LIKE " +
             "concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') AND organizer LIKE " +
-            "concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
-    List<Sign> findSign(Integer pageNum, Integer pageSize, Integer userID, String activityName, String organizer, String address);
+            "concat('%', #{organizer}, '%')")
+    List<Sign> findSign(Integer userID, String activityName, String organizer, String address);
     @Select("SELECT count(*) FROM sign WHERE userID = #{userID} AND status = '已报名' AND activityName LIKE " +
             "concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') AND organizer " +
             "LIKE concat('%', #{organizer}, '%') ")
@@ -33,8 +32,8 @@ public interface SignMapper {
     // 已参加活动列表
     @Select("SELECT * FROM sign WHERE status != '已报名' AND userID = #{userID} AND activityName LIKE " +
             "concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') AND organizer LIKE " +
-            "concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
-    List<Sign> findPart(Integer pageNum, Integer pageSize, Integer userID, String activityName, String organizer, String address);
+            "concat('%', #{organizer}, '%')")
+    List<Sign> findPart(Integer userID, String activityName, String organizer, String address);
     @Select("SELECT count(*) FROM sign WHERE status != '已报名' AND userID = #{userID} AND activityName " +
             "LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
             "AND organizer LIKE concat('%', #{organizer}, '%')")

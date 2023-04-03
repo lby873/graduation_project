@@ -27,16 +27,18 @@ public class ActivityService {
     }
 
     public Boolean deleteById(Integer activityID) {
-        return activityMapper.deleteSignActivity(activityID) && activityMapper.deleteById(activityID);
+        if (activityMapper.findSignActivity(activityID) != 0){
+            return activityMapper.deleteSignActivity(activityID) && activityMapper.deleteById(activityID);
+        }else {
+            return activityMapper.deleteById(activityID);
+        }
+
     }
 
-    public Map<String, Object> findPage(Integer pageNum, Integer pageSize, String name, String organizer, String address) {
-        pageNum = (pageNum - 1) * pageSize;
-        List<Activity> data = activityMapper.selectPage(pageNum, pageSize, name, organizer, address);
-        Integer total = activityMapper.selectTotal(name,organizer,address);
+    public Map<String, Object> findPage(String name, String organizer, String address) {
+        List<Activity> data = activityMapper.selectPage(name, organizer, address);
         Map<String, Object>  res = new HashMap<>();
         res.put("data", data);
-        res.put("total", total);
         return res;
     }
 
@@ -54,10 +56,8 @@ public class ActivityService {
         return activityMapper.ending(activityID);
     }
 
-    public Map<String, Object> findActivityEndPage(Integer pageNum, Integer pageSize, String activityName,
-                                                   String organizer, String address, String endStatus) {
-        pageNum = (pageNum - 1) * pageSize;
-        List<Activity> data = activityMapper.findEndActivity(pageNum, pageSize, activityName, organizer, address,endStatus);
+    public Map<String, Object> findActivityEndPage(String activityName, String organizer, String address, String endStatus) {
+        List<Activity> data = activityMapper.findEndActivity(activityName, organizer, address,endStatus);
         Integer total = activityMapper.totalEndActivity(activityName, organizer, address,endStatus);
         Map<String, Object> res = new HashMap<>();
         res.put("data", data);

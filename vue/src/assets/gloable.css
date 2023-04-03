@@ -16,3 +16,58 @@ div.el-input,div.el-table{
 .pd-10 {
     padding: 10px 0;
 }
+
+body{
+    background-image:url("@/assets/bg.jpg");
+    /*opacity: 0.9;*/
+}
+
+/*设置视频为背景*/
+.videoContainer{
+    width: 100%;
+    position: fixed;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -100;
+}
+.videoContainer:before{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    /*background: rgba(25,29,34,0.65);*/
+}
+.fullscreenVideo{
+    width: 100%;
+    height: 100%;
+    object-fit: fill
+}
+/*设置视频为背景end*/
+
+/**表格背景透明 */
+/*透明化整体*/
+.table-wrapper /deep/.el-table, .el-table__expanded-cell {
+    background-color: transparent !important;
+}
+/*透明化行、单元格,删除表头下横线*/
+.table-wrapper /deep/ tr, .table-wrapper /deep/ th, .table-wrapper /deep/ td {
+    background: #1439391c !important;
+    color:#fff;
+    line-height: 30px;
+    font-size: 15px;
+    /*    border-bottom: 0px; //删除表头下横线*/
+}
+/*//hover时样式*/
+.table-wrapper /deep/  .el-table tbody tr:hover>td {
+    background-color: #367f7f78 !important
+}
+/*// 表格内容(有用)*/
+.table-wrapper /deep/ .el-table__row {
+    background: #1439391c !important;
+    color: #46d4ff;
+}
+/**表格背景透明end */

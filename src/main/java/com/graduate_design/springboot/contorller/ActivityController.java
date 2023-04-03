@@ -37,12 +37,10 @@ public class ActivityController {
     }
 
     @GetMapping("/page")
-    public Map<String, Object> findPage(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize,
-                                        @RequestParam String name,
+    public Map<String, Object> findPage(@RequestParam String name,
                                         @RequestParam String organizer,
                                         @RequestParam String address) {
-        return activityService.findPage(pageNum,pageSize,name,organizer,address);
+        return activityService.findPage(name,organizer,address);
     }
 
 //    @GetMapping("/orgPage")
@@ -53,13 +51,11 @@ public class ActivityController {
 //    }
 
     @GetMapping("/activityEndPage")    // 活动列表
-    public Map<String, Object> findActivityEndPage(@RequestParam Integer pageNum,
-                                                @RequestParam Integer pageSize,
-                                                @RequestParam String activityName,
+    public Map<String, Object> findActivityEndPage(@RequestParam String activityName,
                                                 @RequestParam String organizer,
                                                 @RequestParam String address,
                                                 @RequestParam String endStatus) {
-        return activityService.findActivityEndPage(pageNum,pageSize,activityName,organizer,address,endStatus);
+        return activityService.findActivityEndPage(activityName,organizer,address,endStatus);
     }
 
 }

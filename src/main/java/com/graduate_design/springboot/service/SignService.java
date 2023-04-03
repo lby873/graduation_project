@@ -26,10 +26,9 @@ public class SignService {
     }
 
     // 活动列表，返回activity对象列表
-    public Map<String, Object> findActivityPage(Integer pageNum, Integer pageSize, Integer userID, String activityName,
+    public Map<String, Object> findActivityPage(Integer userID, String activityName,
                                         String organizer,String address,String endStatus) {
-        pageNum = (pageNum - 1) * pageSize;
-        List<Activity> data = signMapper.findActivity(pageNum, pageSize, userID, activityName, organizer, address,endStatus);
+        List<Activity> data = signMapper.findActivity(userID, activityName, organizer, address,endStatus);
         Integer total = signMapper.selectTotalActivity(userID, activityName, organizer, address,endStatus);
         Map<String, Object> res = new HashMap<>();
         res.put("data", data);
@@ -38,16 +37,14 @@ public class SignService {
     }
 
     // 已报名、已参加列表，返回sign对象列表
-    public Map<String, Object> findPage(Integer pageNum, Integer pageSize, Integer userID, String activityName,
-                                                String organizer,String address,Integer pageShow) {
-        pageNum = (pageNum - 1) * pageSize;
+    public Map<String, Object> findPage(Integer userID, String activityName, String organizer,String address,Integer pageShow) {
         List<Sign> data = null;
         Integer total = null;
         if (pageShow == 0) {       // 0已报名列表，1已参加列表
-            data = signMapper.findSign(pageNum, pageSize, userID, activityName, organizer, address);
+            data = signMapper.findSign(userID, activityName, organizer, address);
             total = signMapper.selectTotalSign(userID, activityName, organizer, address);
         } else {
-            data = signMapper.findPart(pageNum, pageSize, userID, activityName, organizer, address);
+            data = signMapper.findPart(userID, activityName, organizer, address);
             total = signMapper.selectTotalPart(userID, activityName, organizer, address);
         }
         Map<String, Object> res = new HashMap<>();

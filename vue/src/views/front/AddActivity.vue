@@ -1,40 +1,50 @@
 <template>
   <div>
-    <div>
+    <div style="margin: 10px 0; text-align: center">
       <template>
-        <el-input style="width: 200px;" placeholder="请输入活动名称" suffix-icon="el-icon-search" v-model="name"></el-input>
-        <el-input style="width: 200px;margin-left: 20px;" placeholder="请输入地点" suffix-icon="el-icon-search" v-model="address"></el-input>
+        <el-input style="width: 200px;font-size: 13px" placeholder="请输入活动名称" suffix-icon="el-icon-search" v-model="name"></el-input>
+        <el-input style="width: 200px;margin-left: 20px;font-size: 13px" placeholder="请输入地点" suffix-icon="el-icon-search" v-model="address"></el-input>
       </template>
-      <el-button style="margin-left: 20px;" type="primary" @click="load">搜索</el-button>
-      <el-button type="warning" @click="reset">重置</el-button>
-      <el-button type="primary" @click="dialogFormVisible = true" style="float:right; margin-bottom: 10px">
+      <el-button style="margin-left: 20px;font-size: 13px" type="primary" @click="load">搜索</el-button>
+      <el-button style="margin-left: 20px;font-size: 13px" type="warning" @click="reset">重置</el-button>
+      <el-button type="primary" @click="dialogFormVisible = true" style="font-size: 13px;margin-left: 20px">
         新增活动 <i class="el-icon-circle-plus-outline"></i>
       </el-button>
     </div>
+    <div  style="margin: 10px 0; text-align: center">
+      <span style="margin: 5px 0 0 10px; font-size: 13px; color: white">一共查询到{{tableData.length}}条活动数据</span>
+    </div>
 
-    <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
-      <el-table-column prop="activityID" sortable label="活动ID" width="100" align="center"></el-table-column>
-      <el-table-column prop="time" label="活动时间" width="100" align="center"></el-table-column>
-      <el-table-column prop="name" label="活动名称" width="100" align="center"></el-table-column>
-      <el-table-column prop="organizer" label="主办方社团" width="100" align="center"></el-table-column>
-      <el-table-column prop="address" label="活动地址" width="100" align="center"></el-table-column>
-      <el-table-column prop="detail" label="活动详情"></el-table-column>
-      <el-table-column prop="endStatus" label="活动状态" width="100" align="center"></el-table-column>
-      <el-table-column label="操作"  width="250" align="center">
-        <template slot-scope="scope">
-          <el-button type="success" @click="alter(scope.row)">修改<i class="el-icon-edit"></i></el-button>
-          <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info"
-                         icon-color="red" title="您确定结束该活动吗？" @confirm="ending(scope.row)">
-            <el-button type="warning" slot="reference">结束活动</el-button>
-          </el-popconfirm>
-          <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
-                         icon="el-icon-info" icon-color="red" title="您确定删除该活动吗？" @confirm="del(scope.row.activityID)">
-            <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
-          </el-popconfirm>
-
-        </template>
-      </el-table-column>
-    </el-table>
+    <div v-if="tableData.length!=0">
+      <el-row :gutter="40" >
+        <!--        span规定一个col占据24份中的多少份.-->
+        <el-col :span="19" v-for="item in tableData" style="margin: 10px 140px; ">
+          <el-card shadow="hover" style="background-color: rgba(255, 255, 255, 0.1); color: white;font-size: 16px">
+            <el-row >
+              <div>
+                <b style="font-size: 18px">{{ item.name }}</b>
+                <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
+                               icon="el-icon-info" icon-color="red" title="您确定删除该活动吗？" @confirm="del(item.activityID)">
+                  <el-button style="float:right;font-size: 14px;" type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
+                </el-popconfirm>
+                <el-popconfirm v-if="item.endStatus != '活动已结束'" class="ml-5" confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info"
+                               icon-color="red" title="您确定结束该活动吗？" @confirm="ending(item)">
+                  <el-button  style="float:right;font-size: 14px;margin-right: 10px" type="warning" slot="reference">结束活动</el-button>
+                </el-popconfirm>
+                <el-button type="success" @click="alter(item)" style="float:right;font-size: 14px;margin-right: 10px" >修改<i class="el-icon-edit"></i></el-button>
+              </div>
+              <el-divider></el-divider>
+              <p>活动时间：{{ item.time }}</p>
+              <p style="margin-top: 10px;">活动主办方：{{ item.organizer }}</p>
+              <p style="margin-top: 10px;">活动地址：{{ item.address }}</p>
+              <p v-if="item.endStatus == '活动已结束'" style="margin-top: 10px;color: red;"><b>活动状态：{{ item.endStatus }}</b></p>
+              <p v-else style="margin-top: 10px;color: blue;"><b>活动状态：{{ item.endStatus }}</b></p>
+              <p style="margin-top: 10px;line-height: 150%">活动详情：{{ item.detail }}</p>
+            </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
 
 <!--    活动增加、修改，同个表单-->
     <el-dialog title="发布活动" :visible.sync="dialogFormVisible" width="30%" center>
@@ -63,18 +73,7 @@
       </div>
     </el-dialog>
 
-    <!-- 分页行 -->
-    <div style="padding: 10px 0">
-      <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          :page-sizes="[3, 5, 10, 15]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-      </el-pagination>
-    </div>
+
   </div>
 </template>
 
@@ -93,9 +92,6 @@ export default {
       userLogin: JSON.parse(localStorage.getItem("userLogin")),   //json转化为对象
       tableData: [],
       organization: '',
-      total: 0,
-      pageNum: 1,
-      pageSize: 3,
       name:'',
       address:'',
       dialogFormVisible: false,   // 活动表单是否可见
@@ -134,15 +130,12 @@ export default {
       // 用axios请求数据
       this.request.get("/activity/page",{
         params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
           name:this.name,
           organizer: this.organizer,
           address: this.address
         }
       }).then(res => {
         this.tableData = res.data
-        this.total = res.total
       })
     },
     handleSizeChange(pageSize) {
@@ -179,9 +172,9 @@ export default {
       });
     },
 
-    alter(row){
+    alter(item){
       this.dialogFormVisible = true
-      this.form = row
+      this.form = item
     },
     del(id) {
       this.request.delete("/activity/" + id).then(res =>{
@@ -191,19 +184,15 @@ export default {
         }
       })
     },
-    ending(row) {
-      if (row.endStatus == "活动已结束"){
-        this.$message.error("操作失败，活动已是结束状态")
-      } else {
-        this.request.post("/activity/ending/"+row.activityID).then(res =>{
-          if (res){
-            this.$message.success("修改成功")
-            this.load()
-          } else {
-            this.$message.error("当前活动没有人报名，无法结束活动，您可以选择删除活动")
-          }
-        })
-      }
+    ending(item) {
+      this.request.post("/activity/ending/"+item.activityID).then(res =>{
+        if (res){
+          this.$message.success("该活动已成功结束")
+          this.load()
+        } else {
+          this.$message.error("当前活动没有人报名，无法结束活动，您可以选择删除活动")
+        }
+      })
     },
   }
 }
@@ -213,4 +202,5 @@ export default {
 .headerBg {
   background: #eee!important;
 }
+
 </style>

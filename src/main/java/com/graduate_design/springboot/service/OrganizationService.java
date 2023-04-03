@@ -18,13 +18,10 @@ public class OrganizationService {
     @Autowired
     private UserMapper userMapper;
 
-    public Map<String, Object> findPage(Integer pageNum, Integer pageSize) {
-        pageNum = (pageNum - 1) * pageSize;
-        List<Organization> data = organizationMapper.selectPage(pageNum, pageSize);
-        Integer total = organizationMapper.selectTotal();
+    public Map<String, Object> findPage() {
+        List<Organization> data = organizationMapper.selectPage();
         Map<String, Object> res = new HashMap<>();
         res.put("data", data);
-        res.put("total", total);
         return res;
     }
 

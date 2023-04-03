@@ -1,10 +1,9 @@
 <template>
-  <div>
-<!--    前端对contentStyle和labelStyle报错，未解决    -->
-    <el-descriptions class="margin-top" :column="1" size="large" border contentStyle="text-align:center;"
-                     labelStyle="text-align:center; max-width:50px; font-weight:bold" >
+  <div style="display: flex;justify-content: center;align-items: center;">
+
+    <el-descriptions class="margin-top" :column="1" size="large" border>
       <template slot="title" >
-        <span style="font-size: 24px;">个人信息</span>
+        <span style="font-size: 24px;color: white">个人信息</span>
       </template>
       <template slot="extra" >
         <el-button type="primary" size="medium" @click="drawerVisible = true">修改个人信息</el-button>
@@ -266,6 +265,9 @@
     created() {
       this.load()
     },
+    inject:[      // 注入reload方法
+      'reload'
+    ],
     methods:{
       load(){
         this.form = this.userLogin            // 抽屉内容初始化
@@ -298,7 +300,8 @@
 
       handleClose() {   // 关闭抽屉
         this.drawerVisible = false
-        window.location.reload()      // 必须刷新页面
+        this.reload()
+        // window.location.reload()      // 强制刷新页面
       },
 
       saveForm(){     // 提交抽屉个人信息表单
@@ -310,7 +313,8 @@
                 localStorage.setItem("userLogin", JSON.stringify(this.form))  // 重新存储用户信息到浏览器
                 this.drawerVisible = false
                 this.dialogVisible = false
-                window.location.reload()      // 必须刷新页面
+                this.reload()
+                // window.location.reload()      // 强制刷新页面
               } else {    // 存在相同用户名
                 this.$message.error("用户名已存在，修改失败")
                 this.dialogVisible = false
@@ -384,10 +388,24 @@
 
 <style scoped>
 .margin-top{
-  width: 50%;
+  width: 40%;
   padding: 10px;
   margin: 50px auto;
   font-size: 15px;
 }
-
+/deep/.el-descriptions__body{
+  color: white;
+  background-color: rgba(255,255,255,0.1);
+}
+/deep/.el-descriptions-item__label.is-bordered-label{
+  max-width: 70px;
+  font-weight:bold;
+  color: white;
+  background-color: rgba(0,0,0,0);
+}
+/deep/.el-descriptions :not(.is-bordered).el-descriptions-item__cell{
+  text-align:center;
+  font-size: 17px;
+  border: 2px solid black;
+}
 </style>

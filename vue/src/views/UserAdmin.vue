@@ -1,50 +1,53 @@
 <template>
-  <div>
-    <div style="margin: 10px 0">
+  <div style="margin: 0 10px">
+    <div style="margin: 10px 0 15px 0;display: flex;justify-content: center;align-items:center;">
       <template>
-        <el-input style="width: 180px;" placeholder="请输入用户名" suffix-icon="el-icon-search" v-model="user_name"></el-input>
-        <el-input style="width: 180px; margin-left: 10px;" placeholder="请输入昵称" suffix-icon="el-icon-search" v-model="nick_name"></el-input>
-        <el-input style="width: 180px; margin-left: 10px;" placeholder="请输入手机号" suffix-icon="el-icon-search" v-model="phone_number"></el-input>
-        <el-select style="width: 180px; margin-left: 10px;" placeholder="请选择用户身份" suffix-icon="el-icon-search" v-model="identitySelect">
+        <el-input style="width: 180px;font-size: 13px" placeholder="请输入用户名" suffix-icon="el-icon-search" v-model="user_name"></el-input>
+        <el-input style="width: 180px; margin-left: 10px;font-size: 13px" placeholder="请输入昵称" suffix-icon="el-icon-search" v-model="nick_name"></el-input>
+        <el-input style="width: 180px; margin-left: 10px;font-size: 13px" placeholder="请输入手机号" suffix-icon="el-icon-search" v-model="phone_number"></el-input>
+        <el-select style="width: 180px; margin-left: 10px;font-size: 13px" placeholder="请选择用户身份" suffix-icon="el-icon-search" v-model="identitySelect">
           <el-option v-for="item in identityList" :key="item.identity" :label="item.identity"
                      :value="item.identity" >
           </el-option>
         </el-select>
-        <el-select style="width: 200px; margin-left: 10px;" placeholder="请选择社团" suffix-icon="el-icon-search" v-model="orgSelect">
+        <el-select style="width: 200px; margin-left: 10px;font-size: 13px" placeholder="请选择社团" suffix-icon="el-icon-search" v-model="orgSelect">
           <el-option v-for="item in orgList" :key="item.organization" :label="item.organization"
                      :value="item.organization" >
           </el-option>
         </el-select>
-
       </template>
-      <el-button style="margin-left: 10px;" type="primary" @click="load">搜索</el-button>
-      <el-button type="warning" @click="reset">重置</el-button>
-      <el-button type="primary" @click="handleAdd" style="float:right; margin-bottom: 10px">
+      <el-button style="margin-left: 10px;font-size: 13px" type="primary" @click="load">搜索</el-button>
+      <el-button style="margin-left: 10px;font-size: 13px" type="warning" @click="reset">重置</el-button>
+    </div>
+    <div>
+      <el-button type="primary" @click="handleAdd" style="margin-bottom: 20px;font-size: 13px">
         新增用户 <i class="el-icon-circle-plus-outline"></i>
       </el-button>
     </div>
 
 <!--    用户数据表-->
-    <el-table :data="tableData" border stripe header-cell-class-name="headerBg" >
-      <el-table-column prop="userID" label="用户ID" width="80" align="center"></el-table-column>
-      <el-table-column prop="username" label="用户名" align="center"></el-table-column>
-      <el-table-column prop="nickname" label="昵称" align="center"></el-table-column>
-      <el-table-column prop="phone" label="手机号码" align="center"></el-table-column>
-      <el-table-column prop="identity" label="用户身份" align="center"></el-table-column>
-      <el-table-column prop="organization" label="所属社团" align="center"></el-table-column>
-      <el-table-column label="操作" width="200" align="center">
-        <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit(scope.row)">修改<i class="el-icon-edit"></i></el-button>
-          <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
-                         icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row)">
-            <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table-wrapper">
+      <el-table :data="tableData" border stripe header-cell-class-name="headerBg" >
+        <el-table-column prop="userID" sortable label="用户ID" width="100" align="center"></el-table-column>
+        <el-table-column prop="username" label="用户名" align="center"></el-table-column>
+        <el-table-column prop="nickname" label="昵称" align="center"></el-table-column>
+        <el-table-column prop="phone" label="手机号码" align="center"></el-table-column>
+        <el-table-column prop="identity" label="用户身份" align="center"></el-table-column>
+        <el-table-column prop="organization" label="所属社团" align="center"></el-table-column>
+        <el-table-column label="操作" width="200" align="center">
+          <template slot-scope="scope">
+            <el-button type="success" @click="handleEdit(scope.row)">修改<i class="el-icon-edit"></i></el-button>
+            <el-popconfirm class="ml-5" confirm-button-text='确定删除' cancel-button-text='取消'
+                           icon="el-icon-info" icon-color="red" title="您确定删除这条数据吗？" @confirm="del(scope.row)">
+              <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
 <!--    分页行 -->
-    <div style="padding: 10px 0">
+    <div style="padding: 10px 0;">
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -52,7 +55,9 @@
           :page-sizes="[5, 10, 15,20]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
+          :total="total"
+          style="background-color: rgba(255,255,255,0.7);"
+      >
       </el-pagination>
     </div>
 
@@ -201,13 +206,15 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data
-        this.total = res.total
+        this.total = res.total-1
       })
-      this.request.get("/user/identity").then(list =>{  // 查询用户身份数据
-        this.identityList = list
+      this.request.get("/user/identity").then(res =>{  // 查询用户身份数据
+        res = res.filter(item => item.identity !== "系统管理员")   // 过滤
+        this.identityList = res
       })
-      this.request.get("/user/org").then(list =>{    // 查询社团
-        this.orgList = list
+      this.request.get("/user/org").then(res =>{    // 查询社团
+        res = res.filter(item => item.organization !== "")
+        this.orgList = res
       })
     },
     reset(){
@@ -285,11 +292,34 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .headerBg {
   background: #eee!important;
 }
-.el-menu-vertical-demo:not(.el-menu--collapse) {
+/deep/.el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 250px;
 }
+/**表格背景透明 */
+/*透明化整体*/
+.table-wrapper /deep/.el-table, .el-table__expanded-cell {
+  background-color: transparent !important;
+}
+/*透明化行、单元格,删除表头下横线*/
+.table-wrapper /deep/ tr, .table-wrapper /deep/ th, .table-wrapper /deep/ td {
+  background: #1439391c !important;
+  color:#fff;
+  line-height: 30px;
+  font-size: 15px;
+  /*    border-bottom: 0px; //删除表头下横线*/
+}
+/*//hover时样式*/
+.table-wrapper /deep/  .el-table tbody tr:hover>td {
+  background-color: #367f7f78 !important
+}
+/*// 表格内容(有用)*/
+.table-wrapper /deep/ .el-table__row {
+  background: #1439391c !important;
+  color: #46d4ff;
+}
+/**表格背景透明end */
 </style>

@@ -79,6 +79,12 @@ public class UserService {
         pageNum = (pageNum - 1) * pageSize;
         List<User> data = userMapper.selectPage(pageNum, pageSize, username, nickname, phone,identity,organization);
         Integer total = userMapper.selectTotal(username, nickname, phone,identity,organization);
+        for (int i=0;i<data.toArray().length;i++){
+            if(data.get(i).getIdentity().equals("系统管理员")){
+                data.remove(i);
+                break;
+            }
+        }
         Map<String, Object> res = new HashMap<>();
         res.put("data", data);
         res.put("total", total);

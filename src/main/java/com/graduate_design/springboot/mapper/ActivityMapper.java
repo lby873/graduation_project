@@ -19,13 +19,12 @@ public interface ActivityMapper {
     Boolean deleteById(Integer activityID);
     @Delete("DELETE FROM sign WHERE activityID = #{activityID}")
     Boolean deleteSignActivity(Integer activityID);             // 若活动被删除，则报名的相关活动要被删除
+    @Select("SELECT count(*) FROM sign WHERE activityID = #{activityID}")
+    Integer findSignActivity(Integer activityID);               // 查询是否有报名活动记录
 
     @Select("SELECT * FROM activity WHERE name LIKE concat('%', #{name}, '%') AND address LIKE concat('%',#{address},'%')  " +
-            "AND organizer LIKE concat('%', #{organizer}, '%') limit #{pageNum}, #{pageSize}")
-    List<Activity> selectPage(Integer pageNum, Integer pageSize, String name, String organizer, String address);
-    @Select("SELECT count(*) FROM activity WHERE name LIKE concat('%', #{name}, '%') " +
-            "AND address LIKE concat('%', #{address}, '%') AND organizer LIKE concat('%', #{organizer}, '%')")
-    Integer selectTotal(String name, String organizer, String address);
+            "AND organizer LIKE concat('%', #{organizer}, '%')")
+    List<Activity> selectPage(String name, String organizer, String address);
 
 //    @Select("SELECT * FROM activity WHERE organizer LIKE #{organizer} limit #{pageNum}, #{pageSize}")
 //    List<Activity> selectOrgPage(Integer pageNum, Integer pageSize, String organizer);
@@ -37,9 +36,8 @@ public interface ActivityMapper {
     Boolean ending(Integer activityID);
 
     @Select("SELECT * FROM activity WHERE name LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
-            "AND organizer LIKE concat('%', #{organizer}, '%') AND endStatus=#{endStatus} limit #{pageNum}, #{pageSize}")
-    List<Activity> findEndActivity(Integer pageNum, Integer pageSize,String activityName,
-                                String organizer, String address, String endStatus);
+            "AND organizer LIKE concat('%', #{organizer}, '%') AND endStatus=#{endStatus}")
+    List<Activity> findEndActivity(String activityName, String organizer, String address, String endStatus);
     @Select("SELECT count(*) FROM activity WHERE name LIKE concat('%', #{activityName}, '%') AND address LIKE concat('%', #{address}, '%') " +
             "AND organizer LIKE concat('%', #{organizer}, '%')  AND endStatus = #{endStatus}")
     Integer totalEndActivity(String activityName, String organizer, String address, String endStatus);
