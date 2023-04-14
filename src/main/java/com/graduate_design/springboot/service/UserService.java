@@ -101,15 +101,13 @@ public class UserService {
         User user = userMapper.loginData(username);
         String code = null;    // 0：正常登录； 1：用户名错误； 2：密码错误； 3：身份错误
 
-        if (user == null){      // 数据库中不存在该用户
-            code = "1";
-        }else if (!user.getIdentity().equals(identity)){        // 用户存在，身份不相等
-            code = "3";
-        }else if(encoder.matches(password, user.getPassword())) {  // 用户存在，身份相等，解密后核对密码
-            code = "0";
-        }else {
-            code = "2";
-        }
+        // 数据库中不存在该用户
+        if (user == null)     code = "1";
+        // 用户存在，身份不相等
+        else if (!user.getIdentity().equals(identity))  code = "3";
+        // 用户存在，身份相等，解密后核对密码
+        else if(encoder.matches(password, user.getPassword()))  code = "0";
+        else   code = "2";
         res.put("data", user);
         res.put("code", code);
         return res;

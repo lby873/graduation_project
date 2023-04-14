@@ -110,6 +110,8 @@
         }).then(res => {
           this.tableData = res.data
         })
+
+
      },
       handleSizeChange(pageSize) {
         this.pageSize = pageSize

@@ -28,12 +28,13 @@
         </el-form-item>
       </el-form>
       <div slot="footer" style="margin-top: 30px;">
-        <el-link target="_blank" style="float:left;margin: 15px 0 0 15px;font-size: 14px;color: #cccccc" @click="forgetPw">忘记密码</el-link>
+        <el-link target="_blank" style="float:left;margin: 15px 0 0 25px;font-size: 13px;color: #cccccc" @click="forgetPw">忘记密码</el-link>
         <el-button class="btn" style="margin: 0 15px;float:right;" size="large" @click="register">注 册</el-button>
         <el-button class="btn" style="float:right;" size="large" @click="login">登 录</el-button>
       </div>
     </div>
 
+<!--    注册页面-->
     <div class="form" width="30%" style="height: 380px" v-show="registerFormVisible">
       <div style="margin: 10px 0 20px 0; text-align: center; font-size: 24px"><b>用 户 注 册</b></div>
       <el-form :model="form" :rules="rules_register" ref="userRegister" label-width="80px" size="medium" style="padding-right: 20px">
@@ -63,8 +64,8 @@
 <!--        </el-form-item>-->
       </el-form>
       <div slot="footer" style="margin-top: 10px;">
-        <el-button class="btn" style="margin-left: 25%;" size="large" @click="cancelForm">取 消</el-button>
-        <el-button class="btn" style="margin-left: 10%;"size="large" @click="saveForm()">确 定</el-button>
+        <el-button class="btn" style="margin-left: 20%;" size="large" @click="cancelForm">取 消</el-button>
+        <el-button class="btn" style="margin-left: 20%;"size="large" @click="saveForm()">确 定</el-button>
       </div>
     </div>
 
@@ -83,7 +84,10 @@ export default {
   name: "Login",
   data() {
     return {
-      user: {},
+      user: {
+        uid:1223,
+        pa:2222,
+      },
       identityList: [],
       registerFormVisible: false,   //表单是否可见
       loginFormVisible:true,
